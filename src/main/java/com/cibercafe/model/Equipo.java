@@ -5,10 +5,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 
 /**
- * Entidad Equipo.
- * Representa una computadora o consola en el cibercafé.
+ * Entidad Equipo ajustada a la base de datos existente.
  */
 @Entity
 @Table(name = "equipos")
@@ -16,11 +16,19 @@ public class Equipo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_equipo")
     private Long id;
 
-    private String nombre; // Ej: PC-01, Consola-01
-    private String tipo;   // Ej: Gamer, Oficina, PS5
-    private String estado; // Ej: DISPONIBLE, OCUPADO, MANTENIMIENTO
+    @Column(name = "numero_equipo")
+    private String nombre; // Lo mapeamos a nombre para no romper el JS
+
+    @Column(name = "descripcion")
+    private String tipo;   // Lo mapeamos a tipo para no romper el JS
+
+    @Column(name = "estado")
+    private String estado;
+
+    // Como en tu DB actual no hay precio_hora, lo dejamos como opcional o nulo por ahora
     private Double precioHora;
 
     public Equipo() {}

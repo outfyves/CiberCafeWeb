@@ -5,10 +5,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import java.time.LocalDateTime;
 
 /**
- * Entidad Cliente para JPA.
- * Representa la tabla 'clientes' en la base de datos.
+ * Entidad Cliente ajustada a la base de datos existente.
  */
 @Entity
 @Table(name = "clientes")
@@ -16,6 +17,7 @@ public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_cliente")
     private Long id;
 
     private String nombre;
@@ -24,8 +26,12 @@ public class Cliente {
     private String correo;
     private String telefono;
 
-    // Constructor vacío (obligatorio para JPA)
-    public Cliente() {}
+    @Column(name = "fecha_registro", updatable = false)
+    private LocalDateTime fechaRegistro;
+
+    public Cliente() {
+        this.fechaRegistro = LocalDateTime.now();
+    }
 
     // Getters y Setters
     public Long getId() { return id; }
@@ -45,4 +51,7 @@ public class Cliente {
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
+
+    public LocalDateTime getFechaRegistro() { return fechaRegistro; }
+    public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 }
