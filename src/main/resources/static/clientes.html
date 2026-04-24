@@ -272,20 +272,25 @@
             <form id="clienteForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="nombreCliente">Nombre Completo *</label>
-                        <input type="text" id="nombreCliente" class="form-control" placeholder="Ej. Juan Pérez" required>
+                        <label for="cedulaCliente">Cédula / ID</label>
+                        <input type="text" id="cedulaCliente" class="form-control" placeholder="Ej. 123456789">
                     </div>
                     <div class="form-group">
-                        <label for="emailCliente">Correo Electrónico *</label>
-                        <input type="email" id="emailCliente" class="form-control" placeholder="juan@ejemplo.com" required>
+                        <label for="nombreCliente">Nombre Completo *</label>
+                        <input type="text" id="nombreCliente" class="form-control" placeholder="Ej. Juan Pérez" required>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
+                        <label for="emailCliente">Correo Electrónico *</label>
+                        <input type="email" id="emailCliente" class="form-control" placeholder="juan@ejemplo.com" required>
+                    </div>
+                    <div class="form-group">
                         <label for="telefonoCliente">Teléfono</label>
                         <input type="tel" id="telefonoCliente" class="form-control" placeholder="+57 ...">
                     </div>
+                </div>
                     <div class="form-group">
                         <label for="tipoCliente">Tipo de Cliente *</label>
                         <select id="tipoCliente" class="form-control" required>
