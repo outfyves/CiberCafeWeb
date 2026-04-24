@@ -1,0 +1,140 @@
+/* sesiones.css */
+
+.sessions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-lg);
+}
+
+.pc-card {
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-light);
+    border-top: 5px solid var(--text-light);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pc-card.active {
+    border-top-color: var(--success-color);
+    box-shadow: var(--shadow-medium);
+}
+
+/* estado de mantenimiento */
+.pc-card.mantenimiento {
+    border-top-color: var(--danger-color);
+    opacity: 0.7;
+}
+
+.pc-card.mantenimiento .status-badge {
+    background: #e74c3c !important;
+    color: white;
+}
+
+.pc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pc-name {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+}
+
+.pc-status {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 50px;
+    background: var(--bg-gray);
+    text-transform: uppercase;
+}
+
+.pc-card.active .pc-status {
+    background: rgba(46, 204, 113, 0.2);
+    color: var(--success-color);
+}
+
+.pc-body {
+    text-align: center;
+    padding: var(--spacing-sm) 0;
+}
+
+.timer-display {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--secondary-light);
+    margin: 5px 0;
+}
+
+.pc-card.active .timer-display {
+    color: var(--primary-color);
+}
+
+.pc-footer {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-session {
+    flex: 1;
+    padding: 0.6rem;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.btn-start {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-stop {
+    background-color: var(--danger-color);
+    color: white;
+    display: none; /* Oculto por defecto */
+}
+
+.pc-card.active .btn-start { display: none; }
+.pc-card.active .btn-stop { display: flex; }
+
+.client-name {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    height: 1.2rem;
+}
+
+.timer-finished {
+    color: #e74c3c !important;
+    animation: pulse-red 1s infinite;
+    font-weight: bold;
+}
+
+@keyframes pulse-red {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.countdown-mode {
+    border-left: 5px solid #f1c40f; /* Color amarillo para identificar prepagos */
+}
+
+/* tarifa/hora mostrada en tarjetas de sesión */
+.pc-rate {
+    font-size: 0.8rem;
+    color: var(--text-medium);
+    margin-left: 0.5rem;
+}

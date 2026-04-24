@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes - CyberManager</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/reportes.css"> <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="https://images.icon-icons.com/3645/PNG/256/offer_discount_sales_monday_cyber_icon_227974.png">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-desktop"></i>
+                    <h2>CyberManager</h2>
+                </div>
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i><span>Panel Principal</span></a></li>
+                    <li><a href="equipos.html"><i class="fas fa-desktop"></i><span>Gestión de Equipos</span></a></li>
+                    <li><a href="clientes.html"><i class="fas fa-users"></i><span>Gestión de Clientes</span></a></li>
+                    <li><a href="sesiones.html"><i class="fas fa-clock"></i><span>Control de Sesiones</span></a></li>
+                    <li><a href="ventas.html"><i class="fas fa-cash-register"></i><span>Punto de Venta</span></a></li>
+                    <li class="active"><a href="reportes.html"><i class="fas fa-chart-bar"></i><span>Reportes</span></a></li>
+                    <li><a href="Configuracion.html"><i class="fas fa-cog"></i><span>Configuración</span></a></li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
+                    <div class="user-details">
+                        <h4>Administrador</h4>
+                        <p>admin@cybermanager.com</p>
+                    </div>
+                </div>
+                <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+            </div>
+        </nav>
+        
+        <main class="main-content">
+            <header class="main-header">
+                <h1>Reportes y Estadísticas</h1>
+                <div class="header-actions">
+                    <button class="btn-print" id="exportPDF">
+                        <i class="fas fa-print"></i> Exportar PDF
+                    </button>
+                    <button class="btn-print" id="exportCSV" style="background-color: #27ae60;">
+                        <i class="fas fa-download"></i> Exportar CSV
+                    </button>
+                    <div class="date-time">
+                        <span id="currentDateTime"></span>
+                    </div>
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content-wrapper">
+                <div class="report-filters">
+                    <div class="filter-group">
+                        <label>Periodo:</label>
+                        <select id="periodSelect" class="chart-filter">
+                            <option value="today">Hoy</option>
+                            <option value="week" selected>Esta Semana</option>
+                            <option value="month">Este Mes</option>
+                            <option value="custom">Personalizado</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Desde:</label>
+                        <input type="date" class="date-input">
+                    </div>
+                    <div class="filter-group">
+                        <label>Hasta:</label>
+                        <input type="date" class="date-input">
+                    </div>
+                    <button class="btn-filter" id="applyFilters">
+                        <i class="fas fa-check"></i> Generar Reporte
+                    </button>
+                </div>
+
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon income"><i class="fas fa-hand-holding-usd"></i></div>
+                        <div class="stat-info">
+                            <h3>Ingresos Totales</h3>
+                            <p class="stat-value" id="totalRevenueDisplay">$0.00</p>
+                            <p class="stat-change positive" id="changeIngresos"><i class="fas fa-arrow-up"></i> +5.2%</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon sessions"><i class="fas fa-history"></i></div>
+                        <div class="stat-info">
+                            <h3>Horas Vendidas</h3>
+                            <p class="stat-value" id="horasVendidas">0h</p>
+                            <p class="stat-change positive" id="changeHoras"><i class="fas fa-arrow-up"></i> +3.1%</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon clients"><i class="fas fa-user-plus"></i></div>
+                        <div class="stat-info">
+                            <h3>Nuevos Clientes</h3>
+                            <p class="stat-value" id="nuevosClientes">0</p>
+                            <p class="stat-change positive" id="changeClientes"><i class="fas fa-arrow-up"></i> +2</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-charts">
+                    <div class="chart-container">
+                        <div class="chart-header"><h3>Comparativo de Ingresos</h3></div>
+                        <div class="chart-wrapper">
+                            <canvas id="mainReportChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-header"><h3>Uso por Categoría de Equipo</h3></div>
+                        <div class="chart-wrapper">
+                            <canvas id="pieReportChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container" style="margin-top: 20px;">
+                    <div class="table-header">
+                        <h3>Detalle de Transacciones</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID Transacción</th>
+                                <th>Fecha</th>
+                                <th>Concepto</th>
+                                <th>Método</th>
+                                <th>Monto</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTable">
+                            <!-- Las transacciones se renderizarán aquí dinámicamente desde reportes.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <footer class="main-footer">
+                <p>CyberManager v1.0.0 | Reporte Generado por: Admin</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/reportes.js"></script>
+</body>
+</html>

@@ -1,0 +1,349 @@
+/* responsive.css - Estilos para diferentes tamaños de pantalla */
+
+/* Dispositivos grandes (laptops, escritorio) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+    
+    .dashboard-content {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+/* Dispositivos medianos (tablets, laptops pequeñas) */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+    
+    .dashboard-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        width: 220px;
+    }
+}
+
+/* Tablets */
+@media (max-width: 991px) and (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+    
+    .dashboard-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        width: 200px;
+    }
+    
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+    
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .search-container input {
+        width: 200px;
+    }
+    
+    .search-container input:focus {
+        width: 250px;
+    }
+}
+
+/* Dispositivos móviles grandes */
+@media (max-width: 767px) {
+    .container {
+        max-width: 540px;
+    }
+    
+    /* Sidebar para móviles */
+    .sidebar {
+        position: fixed;
+        height: 100vh;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar.collapsed {
+        transform: translateX(0);
+        width: 250px;
+    }
+    
+    .toggle-sidebar {
+        display: block;
+    }
+    
+    .main-content.expanded {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    /* Header para móviles */
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm);
+    }
+    
+    .main-header h1 {
+        font-size: 1.3rem;
+    }
+    
+    .header-actions {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+    }
+    
+    .search-container {
+        order: 3;
+        width: 100%;
+    }
+    
+    .search-container input {
+        width: 100%;
+    }
+    
+    .search-container input:focus {
+        width: 100%;
+    }
+    
+    .date-time {
+        order: 1;
+        font-size: 0.8rem;
+    }
+    
+    .notifications {
+        order: 2;
+    }
+    
+    /* Dashboard stats para móviles */
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .stat-card {
+        padding: var(--spacing-sm);
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    /* Dashboard content para móviles */
+    .dashboard-content {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .chart-wrapper {
+        height: 250px;
+        padding: var(--spacing-sm);
+    }
+    
+    .actions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Tablas responsivas */
+    .data-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .data-table th,
+    .data-table td {
+        min-width: 120px;
+        padding: 0.75rem;
+    }
+    
+    /* Notifications panel para móviles */
+    .notifications-panel {
+        width: calc(100% - 40px);
+        right: 20px;
+        left: 20px;
+        top: 80px;
+    }
+    
+    /* Login page para móviles */
+    .login-container {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+    
+    .login-header {
+        padding: var(--spacing-lg);
+    }
+    
+    .login-header .logo h1 {
+        font-size: 2rem;
+    }
+    
+    .login-card {
+        padding: var(--spacing-lg);
+    }
+    
+    .login-features {
+        grid-template-columns: 1fr;
+        padding: var(--spacing-lg);
+    }
+    
+    /* Ocultar/mostrar elementos en móviles */
+    .hide-on-mobile {
+        display: none !important;
+    }
+    
+    .show-on-mobile {
+        display: block !important;
+    }
+    
+    /* Ajustes generales de espaciado */
+    .content-wrapper {
+        padding: var(--spacing-sm);
+    }
+    
+    .form-section {
+        padding: var(--spacing-md);
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Dispositivos móviles pequeños */
+@media (max-width: 575px) {
+    :root {
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+    }
+    
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .card {
+        padding: var(--spacing-sm);
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .stat-value {
+        font-size: 1.3rem;
+    }
+    
+    .main-footer {
+        padding: var(--spacing-sm);
+        font-size: 0.8rem;
+    }
+    
+    .sidebar-footer {
+        padding: var(--spacing-sm);
+    }
+    
+    .user-avatar i {
+        font-size: 2rem;
+    }
+}
+
+/* Orientación landscape en móviles */
+@media (max-height: 600px) and (orientation: landscape) {
+    .login-container {
+        min-height: auto;
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .login-header {
+        padding: var(--spacing-md);
+    }
+    
+    .login-card {
+        padding: var(--spacing-md);
+    }
+    
+    .login-features {
+        display: none;
+    }
+    
+    .sidebar {
+        overflow-y: auto;
+    }
+}
+
+/* Pantallas muy grandes */
+@media (min-width: 1600px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    .sidebar {
+        width: 280px;
+    }
+    
+    .main-content.expanded {
+        margin-left: 280px;
+    }
+}
+
+/* Impresión */
+@media print {
+    .sidebar,
+    .main-header,
+    .main-footer,
+    .btn,
+    .actions-grid,
+    .notifications,
+    .search-container {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    
+    .content-wrapper {
+        padding: 0 !important;
+    }
+    
+    .data-table {
+        box-shadow: none !important;
+        border: 1px solid #000;
+    }
+    
+    .stat-card {
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #ddd;
+    }
+    
+    .chart-container {
+        break-inside: avoid;
+    }
+}

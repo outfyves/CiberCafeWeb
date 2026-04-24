@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Principal - CyberManager</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="icon" type="image/png" href="https://images.icon-icons.com/3645/PNG/256/offer_discount_sales_monday_cyber_icon_227974.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-desktop"></i>
+                    <h2>CyberManager</h2>
+                </div>
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul>
+                    <li class="active">
+                        <a href="dashboard.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Panel Principal</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="equipos.html">
+                            <i class="fas fa-desktop"></i>
+                            <span>Gestión de Equipos</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="clientes.html">
+                            <i class="fas fa-users"></i>
+                            <span>Gestión de Clientes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="sesiones.html">
+                            <i class="fas fa-clock"></i>
+                            <span>Control de Sesiones</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="ventas.html">
+                            <i class="fas fa-cash-register"></i>
+                            <span>Punto de Venta</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="reportes.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Reportes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="configuracion.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Configuración</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <h4>Administrador</h4>
+                        <p>admin@cybermanager.com</p>
+                    </div>
+                </div>
+                <a href="index.html" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1>Panel Principal</h1>
+                <div class="header-actions">
+                    <div class="search-container">
+                        <input type="text" placeholder="Buscar...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="date-time">
+                        <span id="currentDateTime"></span>
+                    </div>
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content-wrapper">
+                <!-- Dashboard Stats -->
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon income">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Ingresos Hoy</h3>
+                            <p class="stat-value" id="ingresoHoy">$0.00</p>
+                            <p class="stat-change positive" id="changeIngreso"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon sessions">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Sesiones Activas</h3>
+                            <p class="stat-value" id="sesionesActivas">0/0</p>
+                            <p class="stat-change" id="changeSesiones"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon clients">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Clientes Hoy</h3>
+                            <p class="stat-value" id="clientesHoy">0</p>
+                            <p class="stat-change positive" id="changeClientes"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon equipment">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Equipos Disponibles</h3>
+                            <p class="stat-value" id="equiposDisponibles">0/0</p>
+                            <p class="stat-change negative" id="changeEquipos"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts and Tables -->
+                <div class="dashboard-content">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Ingresos de la Semana</h3>
+                            <select class="chart-filter">
+                                <option>Esta semana</option>
+                                <option>Semana pasada</option>
+                                <option>Este mes</option>
+                            </select>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Sesiones Recientes</h3>
+                            <a href="sesiones.html" class="view-all">Ver todas</a>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Equipo</th>
+                                    <th>Inicio</th>
+                                    <th>Duración</th>
+                                    <th>Costo</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentSessionsTable">
+                                <!-- Las sesiones recientes se renderizarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <h3>Acciones Rápidas</h3>
+                        <div class="actions-grid">
+                            <a href="ventas.html" class="action-card">
+                                <div class="action-icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <h4>Nueva Venta</h4>
+                                <p>Registrar venta de productos</p>
+                            </a>
+                            
+                            <a href="sesiones.html" class="action-card">
+                                <div class="action-icon">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                                <h4>Iniciar Sesión</h4>
+                                <p>Activar equipo para cliente</p>
+                            </a>
+                            
+                            <a href="equipos.html" class="action-card">
+                                <div class="action-icon">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <h4>Mantenimiento</h4>
+                                <p>Reportar equipo en reparación</p>
+                            </a>
+                            
+                            <a href="clientes.html" class="action-card">
+                                <div class="action-icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <h4>Nuevo Cliente</h4>
+                                <p>Registrar nuevo cliente</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <footer class="main-footer">
+                <p>CyberManager v1.0.0 | © 2023 Todos los derechos reservados</p>
+                <p>Sistema de Gestión de Cibercafé</p>
+            </footer>
+        </main>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

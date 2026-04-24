@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Equipos - CyberManager</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/equipos.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="icon" type="image/png" href="https://images.icon-icons.com/3645/PNG/256/offer_discount_sales_monday_cyber_icon_227974.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar (igual que dashboard.html) -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-desktop"></i>
+                    <h2>CyberManager</h2>
+                </div>
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Panel Principal</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="equipos.html">
+                            <i class="fas fa-desktop"></i>
+                            <span>Gestión de Equipos</span>
+                            <span class="badge active-sessions" id="navEquiposBadge">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="clientes.html">
+                            <i class="fas fa-users"></i>
+                            <span>Gestión de Clientes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="sesiones.html">
+                            <i class="fas fa-clock"></i>
+                            <span>Control de Sesiones</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="ventas.html">
+                            <i class="fas fa-cash-register"></i>
+                            <span>Punto de Venta</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="reportes.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Reportes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="configuracion.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Configuración</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <h4>Administrador</h4>
+                        <p>admin@cybermanager.com</p>
+                    </div>
+                </div>
+                <a href="index.html" class="logout-btn" onclick="logout(); return false;">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1><i class="fas fa-desktop"></i> Gestión de Equipos</h1>
+                <div class="header-actions">
+                    <div class="search-container">
+                        <input type="text" placeholder="Buscar equipos...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="date-time">
+                        <span id="currentDateTime"></span>
+                    </div>
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">2</span>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content-wrapper">
+                <!-- Estadísticas rápidas -->
+                <div class="equipos-stats">
+                    <div class="stat-equipo total">
+                        <div class="stat-icon">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalEquipos">0</div>
+                            <div class="stat-label">Equipos Totales</div>
+                            <div class="usage-bar">
+                                <div class="usage-fill disponible" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-equipo disponible">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="equiposDisponibles">0</div>
+                            <div class="stat-label">Disponibles</div>
+                            <div class="usage-bar">
+                                <div class="usage-fill disponible" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-equipo ocupado">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="equiposOcupados">0</div>
+                            <div class="stat-label">Ocupados</div>
+                            <div class="usage-bar">
+                                <div class="usage-fill ocupado" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-equipo mantenimiento">
+                        <div class="stat-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="equiposMantenimiento">0</div>
+                            <div class="stat-label">En Mantenimiento</div>
+                            <div class="usage-bar">
+                                <div class="usage-fill mantenimiento" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filtros -->
+                <div class="filter-section">
+                    <div class="filter-header">
+                        <h3><i class="fas fa-filter"></i> Filtros</h3>
+                        <div class="view-toggle">
+                            <button class="btn btn-sm active" id="viewGrid">
+                                <i class="fas fa-th-large"></i> Cuadrícula
+                            </button>
+                            <button class="btn btn-sm" id="viewList">
+                                <i class="fas fa-list"></i> Lista
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-body">
+                        <div class="form-group">
+                            <label for="filterStatus">Estado</label>
+                            <select id="filterStatus" class="form-control">
+                                <option value="">Todos los estados</option>
+                                <option value="disponible">Disponible</option>
+                                <option value="ocupado">Ocupado</option>
+                                <option value="mantenimiento">En mantenimiento</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="filterType">Tipo</label>
+                            <select id="filterType" class="form-control">
+                                <option value="">Todos los tipos</option>
+                                <option value="gaming">Gaming</option>
+                                <option value="estandar">Estándar</option>
+                                <option value="premium">Premium</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="filterLocation">Ubicación</label>
+                            <select id="filterLocation" class="form-control">
+                                <option value="">Todas las zonas</option>
+                                <option value="zona-a">Zona A</option>
+                                <option value="zona-b">Zona B</option>
+                                <option value="zona-c">Zona C</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="applyFilters">
+                            <i class="fas fa-filter"></i> Aplicar Filtros
+                        </button>
+                        <button class="btn btn-secondary" id="clearFilters">
+                            <i class="fas fa-redo"></i> Limpiar
+                        </button>
+                        <button class="btn btn-success" id="addEquipmentBtn">
+                            <i class="fas fa-plus-circle"></i> Nuevo Equipo
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Grid de equipos -->
+                <div class="equipos-grid" id="equiposGrid">
+                    <!-- Los equipos se renderizarán aquí dinámicamente con JavaScript -->
+                </div>
+                
+                <!-- Vista de lista (oculta por defecto) -->
+                <div class="equipos-list" id="equiposList">
+                    <div class="table-container">
+                        <div class="table-header">
+                            <h3>Lista de Equipos <span id="equiposCount">(0)</span></h3>
+                            <div class="table-summary">
+                                <span class="status active" id="disposCount">0 Disponibles</span>
+                                <span class="status finished" id="ocupCount">0 Ocupados</span>
+                                <span class="status pending" id="mantCount">0 En mantenimiento</span>
+                            </div>
+                        </div>
+                        
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Especificaciones</th>
+                                    <th>Estado</th>
+                                    <th>Cliente</th>
+                                    <th>Tiempo</th>
+                                    <th>Tarifa/hora</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="equiposTableBody">
+                                <!-- Los equipos se renderizarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Paginación -->
+                
+            </div>
+            
+            <footer class="main-footer">
+                <p>CyberManager v1.0.0 | © 2023 Todos los derechos reservados</p>
+                <p>Módulo de Gestión de Equipos</p>
+            </footer>
+        </main>
+    </div>
+    
+    <!-- Modal para agregar/editar equipo -->
+    <div class="modal" id="equipoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-desktop"></i> Nuevo Equipo</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="equipoForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombreEquipo">Nombre del Equipo *</label>
+                            <input type="text" id="nombreEquipo" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="codigoEquipo">Código *</label>
+                            <input type="text" id="codigoEquipo" class="form-control" required placeholder="Ej: PC-G01">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tipoEquipo">Tipo *</label>
+                            <select id="tipoEquipo" class="form-control" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="gaming">Gaming</option>
+                                <option value="estandar">Estándar</option>
+                                <option value="premium">Premium</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="estadoEquipo">Estado *</label>
+                            <select id="estadoEquipo" class="form-control" required>
+                                <option value="disponible">Disponible</option>
+                                <option value="ocupado">Ocupado</option>
+                                <option value="mantenimiento">En mantenimiento</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tarifaEquipo">Tarifa por Hora ($) *</label>
+                            <input type="number" id="tarifaEquipo" class="form-control" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ubicacionEquipo">Ubicación</label>
+                            <select id="ubicacionEquipo" class="form-control">
+                                <option value="zona-a">Zona A</option>
+                                <option value="zona-b">Zona B</option>
+                                <option value="zona-c">Zona C</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="especificaciones">Especificaciones Técnicas</label>
+                        <textarea id="especificaciones" class="form-control" rows="3" placeholder="Procesador, RAM, Tarjeta gráfica, Almacenamiento, etc."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observaciones">Observaciones</label>
+                        <textarea id="observaciones" class="form-control" rows="2" placeholder="Notas adicionales sobre el equipo"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelModal">Cancelar</button>
+                        <button type="submit" class="btn btn-success">Guardar Equipo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/equipos.js"></script>
+</body>
+</html>

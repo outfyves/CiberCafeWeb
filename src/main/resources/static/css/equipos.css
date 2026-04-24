@@ -1,0 +1,450 @@
+/* equipos.css - Estilos específicos para la gestión de equipos */
+
+/* Header de página específica */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.page-header h1 {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--secondary-color);
+}
+
+.page-header .header-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* Filtros y búsqueda */
+.filter-section {
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-light);
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.filter-header h3 {
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.filter-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Tarjetas de equipos */
+.equipos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.equipo-card {
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.equipo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+.equipo-card.disponible {
+    border-left-color: var(--success-color);
+}
+
+.equipo-card.ocupado {
+    border-left-color: var(--warning-color);
+}
+
+.equipo-card.mantenimiento {
+    border-left-color: var(--danger-color);
+}
+
+.equipo-card.inactivo {
+    border-left-color: var(--text-light);
+}
+
+.equipo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-sm);
+}
+
+.equipo-info h3 {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.3rem;
+}
+
+.equipo-id {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.equipo-status {
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.equipo-status.disponible {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: var(--success-color);
+}
+
+.equipo-status.ocupado {
+    background-color: rgba(243, 156, 18, 0.1);
+    color: var(--warning-color);
+}
+
+.equipo-status.mantenimiento {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--danger-color);
+}
+
+.equipo-status.inactivo {
+    background-color: rgba(149, 165, 166, 0.1);
+    color: #95a5a6;
+}
+
+.equipo-details {
+    margin: var(--spacing-md) 0;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: var(--text-dark);
+    text-align: right;
+}
+
+.equipo-specs {
+    background-color: var(--bg-gray);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    margin: var(--spacing-sm) 0;
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.equipo-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.equipo-actions .btn {
+    flex: 1;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Vista de lista (alternativa) */
+.equipos-list {
+    display: none;
+}
+
+.equipos-list.active {
+    display: block;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.view-toggle .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+}
+
+.view-toggle .btn.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Modal para equipos */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-heavy);
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.modal-header h3 {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.close-modal:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.modal-body {
+    padding: var(--spacing-md);
+}
+
+/* Estadísticas de equipos */
+.equipos-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.stat-equipo {
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    box-shadow: var(--shadow-light);
+    border-left: 4px solid;
+}
+
+.stat-equipo.total {
+    border-left-color: var(--secondary-color);
+}
+
+.stat-equipo.disponible {
+    border-left-color: var(--success-color);
+}
+
+.stat-equipo.ocupado {
+    border-left-color: var(--warning-color);
+}
+
+.stat-equipo.mantenimiento {
+    border-left-color: var(--danger-color);
+}
+
+.stat-equipo .stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.stat-equipo.total .stat-icon {
+    background-color: rgba(44, 62, 80, 0.1);
+    color: var(--secondary-color);
+}
+
+.stat-equipo.disponible .stat-icon {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: var(--success-color);
+}
+
+.stat-equipo.ocupado .stat-icon {
+    background-color: rgba(243, 156, 18, 0.1);
+    color: var(--warning-color);
+}
+
+.stat-equipo.mantenimiento .stat-icon {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--danger-color);
+}
+
+.stat-equipo .stat-info {
+    flex: 1;
+}
+
+.stat-equipo .stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.3rem;
+}
+
+.stat-equipo .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+/* Barra de progreso para uso de equipos */
+.usage-bar {
+    height: 8px;
+    background-color: var(--bg-gray);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: var(--spacing-sm) 0;
+}
+
+.usage-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.usage-fill.disponible {
+    background-color: var(--success-color);
+}
+
+.usage-fill.ocupado {
+    background-color: var(--warning-color);
+}
+
+.usage-fill.mantenimiento {
+    background-color: var(--danger-color);
+}
+
+/* Responsive para equipos */
+@media (max-width: 768px) {
+    .equipos-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filter-body {
+        grid-template-columns: 1fr;
+    }
+    
+    .equipos-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+    
+    .page-header .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .equipo-actions {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,441 @@
+/* clientes.css - Estilos específicos para la gestión de clientes */
+
+/* Header de página específica */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.page-header h1 {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--secondary-color);
+}
+
+.page-header .header-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* Estadísticas de clientes */
+.clientes-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.stat-cliente {
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    box-shadow: var(--shadow-light);
+    border-left: 4px solid;
+    transition: transform 0.3s ease;
+}
+
+.stat-cliente:hover {
+    transform: translateY(-5px);
+}
+
+.stat-cliente.total {
+    border-left-color: var(--secondary-color);
+}
+
+.stat-cliente.activos {
+    border-left-color: var(--success-color);
+}
+
+.stat-cliente.inactivos {
+    border-left-color: var(--warning-color);
+}
+
+.stat-cliente.morosos {
+    border-left-color: var(--danger-color);
+}
+
+.stat-cliente .stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.stat-cliente.total .stat-icon {
+    background-color: rgba(44, 62, 80, 0.1);
+    color: var(--secondary-color);
+}
+
+.stat-cliente.activos .stat-icon {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: var(--success-color);
+}
+
+.stat-cliente.inactivos .stat-icon {
+    background-color: rgba(243, 156, 18, 0.1);
+    color: var(--warning-color);
+}
+
+.stat-cliente.morosos .stat-icon {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--danger-color);
+}
+
+.stat-cliente .stat-info {
+    flex: 1;
+}
+
+.stat-cliente .stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.3rem;
+}
+
+.stat-cliente .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+/* Filtros de clientes */
+.clientes-filters {
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-light);
+}
+
+.filters-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.filters-header h3 {
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filters-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.filters-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Tarjetas de clientes */
+.clientes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.cliente-card {
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.cliente-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+.cliente-card.activo {
+    border-left-color: var(--success-color);
+}
+
+.cliente-card.inactivo {
+    border-left-color: var(--warning-color);
+}
+
+.cliente-card.moroso {
+    border-left-color: var(--danger-color);
+}
+
+.cliente-card .cliente-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-sm);
+}
+
+.cliente-card .cliente-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-right: var(--spacing-sm);
+}
+
+.cliente-card .cliente-info {
+    flex: 1;
+}
+
+.cliente-card .cliente-info h3 {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.3rem;
+}
+
+.cliente-card .cliente-info .cliente-id {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.cliente-card .cliente-status {
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.cliente-card .cliente-status.activo {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: var(--success-color);
+}
+
+.cliente-card .cliente-status.inactivo {
+    background-color: rgba(243, 156, 18, 0.1);
+    color: var(--warning-color);
+}
+
+.cliente-card .cliente-status.moroso {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--danger-color);
+}
+
+.cliente-card .cliente-details {
+    margin: var(--spacing-md) 0;
+}
+
+.cliente-card .detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.cliente-card .detail-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.cliente-card .detail-label {
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.cliente-card .detail-value {
+    font-weight: 600;
+    color: var(--text-dark);
+    text-align: right;
+}
+
+.cliente-card .cliente-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.cliente-card .cliente-actions .btn {
+    flex: 1;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Vista de lista de clientes */
+.clientes-list {
+    display: none;
+}
+
+.clientes-list.active {
+    display: block;
+}
+
+/* Modal de cliente */
+.cliente-modal .modal-content {
+    max-width: 600px;
+}
+
+/* Historial del cliente */
+.historial-cliente {
+    background-color: var(--bg-gray);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    margin-top: var(--spacing-md);
+}
+
+.historial-cliente h4 {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.historial-items {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.historial-item {
+    padding: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.85rem;
+}
+
+.historial-item:last-child {
+    border-bottom: none;
+}
+
+.historial-item .historial-fecha {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.historial-item .historial-desc {
+    color: var(--text-light);
+}
+
+/* Responsive para clientes */
+@media (max-width: 768px) {
+    .clientes-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .clientes-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .filters-body {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+    
+    .page-header .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .cliente-card .cliente-actions {
+        flex-direction: column;
+    }
+}
+
+/* Ajustes para el Modal de Clientes */
+.modal.cliente-modal {
+    display: none; 
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(3px);
+}
+
+.modal.cliente-modal.show {
+    display: flex;
+}
+
+.cliente-modal .modal-content {
+    background: var(--bg-white);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 650px;
+    padding: 25px;
+    box-shadow: var(--shadow-heavy);
+    animation: modalSlideIn 0.3s ease-out;
+
+    /* --- AGREGA ESTO PARA EL SCROLL --- */
+    max-height: 90vh;          /* 1. Limita la altura al 90% de la pantalla */
+    overflow-y: auto;          /* 2. Activa el scroll vertical si el contenido excede la altura */
+    display: block;            /* 3. Asegura que el scroll funcione correctamente */
+    position: relative;        /* 4. Estabiliza el posicionamiento interno */
+}
+
+/* Opcional: Estilizar la barra de scroll para que se vea más limpia */
+.cliente-modal .modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+.cliente-modal .modal-content::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+/* Responsivo para el formulario */
+@media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    
+    /* Ajuste extra para móviles: que el modal ocupe casi toda la pantalla */
+    .cliente-modal .modal-content {
+        padding: 15px;
+        width: 95%;
+        max-height: 95vh;
+    }
+}
