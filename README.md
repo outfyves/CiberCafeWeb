@@ -70,4 +70,4 @@ Este proyecto es 100% compatible con NetBeans (preferido por evaluadores):
 *   **Centro:** SENA - Regional Córdoba
 
 ---
-*Este repositorio es de carácter académico y evolutivo. Cada commit representa un paso más hacia la consolidación de un sistema de gestión empresarial completo.*
+*Este repositorio es de carácter académico y evolutivo.*
