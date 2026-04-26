@@ -1,62 +1,69 @@
 # 🖥️ CiberCafe Management System
-## Evidencias Integradas: GA7-220501096 (AA2-EV02, AA3-EV01)
+## Evidencia de Desempeño: GA7-220501096-AA3-EV01
 
-Este repositorio contiene la evolución del sistema de gestión para un Cibercafé, desde su fase inicial en Servlets hasta la implementación actual utilizando **Spring Boot Framework**.
+Este repositorio contiene la codificación del módulo central (**Core**) de un sistema de gestión para un Cibercafé, desarrollado utilizando el framework **Spring Boot**. Esta entrega cumple con los requerimientos de la fase de codificación, aplicando arquitecturas modernas y estándares de la industria solicitados en el programa de formación.
 
 ---
 
-## 🚀 Funcionalidades Principales (Avances AA3-EV01)
-En la última actualización se ha migrado el core del sistema a Spring Boot, integrando los siguientes módulos funcionales:
+## 🚀 Funcionalidades Principales (Entrega AA3-EV01)
+El sistema integra los siguientes módulos funcionales operando sobre una API REST robusta:
 
 ### 1. Gestión Administrativa y Operativa
-*   **Módulo de Equipos:** Inventario de PCs con control de estados (Disponible, Ocupado, Mantenimiento) y tarifas dinámicas.
-*   **Control de Sesiones:** Sistema integrado de tiempo y cobro con soporte para Clientes Registrados y Cliente General. Incluye convertidor de minutos y previsualización de costos.
-*   **Gestión de Clientes:** Base de datos completa con estados y registro automático de fecha.
+*   **Módulo de Equipos:** Inventario dinámico de PCs con control de estados (Disponible, Ocupado, Mantenimiento) y tarifas configuradas en la base de datos.
+*   **Control de Sesiones:** Sistema integrado de tiempo y cobro. Permite gestionar sesiones de Clientes Registrados y Clientes Generales con soporte para tiempo libre y prepago.
+*   **Gestión de Clientes:** CRUD completo con persistencia en MySQL, control de estados (Activo, Inactivo, Moroso) y registro automático de actividad.
 
 ### 2. Punto de Venta (POS) e Inventario
-*   Venta de snacks, bebidas y servicios (impresiones, escaneos).
-*   **Descuento automático de Stock:** Sincronización en tiempo real con la base de datos MySQL al finalizar cada venta.
-*   Categorización de productos y alertas de stock bajo.
+*   Venta de snacks, bebidas y servicios técnicos.
+*   **Sincronización Automática:** Descuento inmediato de Stock en la base de datos al procesar cada venta.
+*   Alertas visuales de stock bajo.
 
-### 3. Reportes y Dashboard
-*   Dashboard con estadísticas visuales y contadores en tiempo real.
-*   Historial de sesiones recientes (Activas y Finalizadas).
-*   Reportes de ingresos y distribución de equipos mediante **Chart.js**.
+### 3. Reportes y Analítica
+*   Dashboard con estadísticas visuales en tiempo real.
+*   Historial de transacciones unificado (Sesiones + Ventas).
+*   Gráficos dinámicos mediante **Chart.js** para ingresos y estados de hardware.
 
 ### 4. Experiencia de Usuario (UI/UX)
-*   **Modo Oscuro:** Soporte nativo para tema oscuro con persistencia.
-*   **Interfaz Responsiva:** Diseño adaptable a diferentes tamaños de pantalla.
-*   **Notificaciones Globales:** Sistema de alertas para mantenimiento y bajo stock visible en todas las páginas.
+*   **Modo Oscuro:** Implementación nativa con persistencia de preferencia del usuario.
+*   **Interfaz Responsiva:** Optimizado para pantallas de escritorio y dispositivos móviles.
+*   **Notificaciones:** Sistema de alertas globales para mantenimiento y bajo stock.
+
+---
+
+## 📂 Documentación y Artefactos
+Se ha incluido la carpeta `/docs` con los artefactos del ciclo de vida del software realizados previamente:
+*   Diagramas de Clases y Casos de Uso.
+*   Diseños y prototipos técnicos.
 
 ---
 
 ## 🛠️ Tecnologías y Estándares
-*   **Backend:** Java 17, Spring Boot 3.2.0, Maven.
-*   **Persistencia:** JPA / Hibernate, MySQL.
-*   **Frontend:** HTML5, CSS3 (Variables & Grid), JavaScript Vanilla (ES6+), FontAwesome.
-*   **Estándares:** Arquitectura MVC, API RESTful, Inyección de Dependencias, Comentarios Técnicos en Código.
+*   **Backend:** Java 17, Spring Boot 3.2.0, Maven, JPA / Hibernate.
+*   **Base de Datos:** MySQL 8.0.
+*   **Frontend:** HTML5, CSS3 (Modern Grid & Variables), JavaScript Vanilla (ES6+), FontAwesome.
+*   **Arquitectura:** MVC (Model-View-Controller) con servicios desacoplados.
 
 ---
 
 ## 💻 Instrucciones de Ejecución
 
 ### Requisitos
-*   Java JDK 17+
-*   Maven
-*   MySQL Server (Base de datos: `cibercafe_db`)
+*   Java JDK 17 o superior.
+*   Maven instalado.
+*   MySQL Server (Base de datos: `cibercafe_db`).
 
-### Ejecución (Linux/Windows)
-1.  Clonar el repositorio.
-2.  Importar la base de datos desde el archivo `cibercafe_db.sql`.
-3.  Ejecutar el comando en la raíz del proyecto:
+### Pasos (Linux/Windows)
+1.  Importar el script SQL `cibercafe_db.sql` en su servidor MySQL.
+2.  Ejecutar el comando en la raíz del proyecto:
     ```bash
     mvn spring-boot:run
     ```
-4.  Acceder a: `http://localhost:8080`
+3.  Acceder a: `http://localhost:8080`
 
 ---
 
 ## 📦 Datos del Aprendiz
 *   **Nombre:** JESUS MORALES
-*   **Programa:** Análisis y Desarrollo de Software (SENA)
 *   **Ficha:** 2721406
+*   **Programa:** Análisis y Desarrollo de Software (SENA)
+*   **Repositorio Oficial:** [https://github.com/outfyves/CiberCafeWeb](https://github.com/outfyves/CiberCafeWeb)
