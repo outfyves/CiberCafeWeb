@@ -1,6 +1,5 @@
 /**
- * sesiones.js - Control de tiempo y renta de equipos
- * Correcciones: Actualización de stats, suma de ingresos y liberación de equipos.
+ * sesiones.js - Gestión de equipos con Formulario Integrado (Anti-Caché)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,50 +8,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
 CyberManager.sesiones = {
     totalPCs: 20,
-    costPerHour: 2.00, // se sustituye por configuración en init
+    costPerHour: 2000,
     sessions: {},
-    totalCollected: 0, // Dinero histórico del día
+    totalCollected: 0,
+    configPcName: null, // PC que está siendo configurado actualmente
+    listaClientes: [],
 
-    init: function() {
-        this.loadConfig(); // cargar costo por hora desde configuracion
+    init: async function() {
         this.loadPersistentSessions();
-        this.renderPCGrid();
+        await this.cargarClientes();
+        await this.renderPCGrid();
         this.startGlobalTimer();
-        this.updateStats(); // Primera actualización de estadísticas
+        this.updateStats();
 
-        // Escuchar cambios en almacenamiento para sincronizar tarifa/estado si se editan equipos
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'cyberEquipos') {
-                this.renderPCGrid();
-                this.updateStats();
-            }
-        });
+        setInterval(() => {
+            if (!this.configPcName) this.renderPCGrid();
+        }, 10000);
     },
 
-    loadConfig: function() {
+    cargarClientes: async function() {
         try {
-            const settings = window.getSystemSettings ? window.getSystemSettings() : {};
-            if (settings.costPerHour) {
-                this.costPerHour = parseFloat(settings.costPerHour);
-            }
-        } catch (e) {
-            console.warn('No se pudo cargar configuración de sesiones:', e);
-        }
+            const resp = await fetch('/api/clientes');
+            if (resp.ok) this.listaClientes = await resp.json();
+        } catch (e) { console.error("Error cargando clientes", e); }
     },
 
     loadPersistentSessions: function() {
         const savedSessions = localStorage.getItem('active_sessions');
         const savedRevenue = localStorage.getItem('total_revenue');
-        
-        if (savedSessions) {
-            this.sessions = JSON.parse(savedSessions);
-            // ensure each session has a rate (fallback a costo general)
-            for (const k in this.sessions) {
-                if (this.sessions[k].rate === undefined) {
-                    this.sessions[k].rate = this.costPerHour;
-                }
-            }
-        }
+        if (savedSessions) this.sessions = JSON.parse(savedSessions);
         if (savedRevenue) this.totalCollected = parseFloat(savedRevenue);
     },
 
@@ -61,223 +45,180 @@ CyberManager.sesiones = {
         localStorage.setItem('total_revenue', this.totalCollected.toString());
     },
 
-    renderPCGrid: function() {
+    renderPCGrid: async function() {
         const grid = document.getElementById('pcGrid');
         if (!grid) return;
 
-        // load current equipment states in case they have changed elsewhere
         let equipos = [];
         try {
-            equipos = JSON.parse(localStorage.getItem('cyberEquipos') || '[]');
-        } catch (e) { /* ignore parsing errors */ }
+            const response = await fetch('/api/equipos');
+            equipos = await response.json();
+        } catch (e) { return; }
 
         grid.innerHTML = '';
 
-        for (let i = 1; i <= this.totalPCs; i++) {
-            const pcId = `PC-${i.toString().padStart(2, '0')}`;
-            const session = this.sessions[pcId];
+        equipos.forEach(eq => {
+            const pcName = eq.nombre;
+            const session = this.sessions[pcName];
             const isActive = !!session;
-            const eq = equipos.find(e => e.id === pcId) || { estado: 'disponible' };
-            const estadoEquipo = eq.estado;
-
-            // determine display values based on session and equipment state
-            let statusText = 'LIBRE';
-            let statusColor = '#2ecc71';
-            if (isActive) {
-                statusText = session.isCountdown ? 'PREPAGO' : 'EN USO';
-                statusColor = '#e67e22';
-            } else if (estadoEquipo === 'mantenimiento') {
-                statusText = 'MANTENIMIENTO';
-                statusColor = '#e74c3c';
-            }
+            const isConfiguring = (this.configPcName === pcName);
+            const estado = eq.estado.toLowerCase();
 
             const card = document.createElement('div');
-            card.className = `pc-card ${isActive ? 'active' : ''} ${session?.isCountdown ? 'countdown-mode' : ''} ${estadoEquipo}`;
-            card.id = `card-${pcId}`;
-            card.innerHTML = `
-                <div class="pc-header">
-                    <div class="pc-icon"><i class="fas fa-desktop"></i></div>
-                    <span class="pc-name">${pcId}</span>
-                    <span class="pc-rate" style="font-size:0.8rem; color:#555; margin-left:8px;">${CyberManager.utils.formatMoney(eq.tarifa || this.costPerHour)}/h</span>
-                    <span class="status-badge" style="background:${statusColor}">
-                        ${statusText}
-                    </span>
-                </div>
-                <div class="pc-body">
-                    <div class="timer-container">
-                        <span class="timer-label">${session?.isCountdown ? 'RESTANTE' : 'TIEMPO'}</span>
-                        <div class="timer-display" id="timer-${pcId}">00:00:00</div>
+            card.className = `pc-card ${isActive ? 'active' : ''} ${estado}`;
+            
+            if (isConfiguring) {
+                // MODO CONFIGURACIÓN (Dentro de la tarjeta)
+                card.innerHTML = `
+                    <div style="padding: 10px; background: #ebedef; border-radius: 8px;">
+                        <h4 style="margin-bottom:10px; color:#2c3e50;">Configurar ${pcName}</h4>
+                        
+                        <label style="font-size:0.8rem; font-weight:bold;">Cliente:</label>
+                        <select id="inlineClient" style="width:100%; padding:5px; margin-bottom:10px; border-radius:4px; border:1px solid #ccc;">
+                            <option value="Cliente General">Cliente General</option>
+                            ${this.listaClientes.map(c => `<option value="${c.nombre} ${c.apellido || ''}">${c.nombre} (${c.cedula})</option>`).join('')}
+                        </select>
+
+                        <label style="font-size:0.8rem; font-weight:bold;">Modo:</label>
+                        <select id="inlineMode" onchange="document.getElementById('inlineTimeInput').style.display = (this.value==='prepago'?'block':'none')" style="width:100%; padding:5px; margin-bottom:10px;">
+                            <option value="libre">Tiempo Libre</option>
+                            <option value="prepago">Prepago</option>
+                        </select>
+
+                        <div id="inlineTimeInput" style="display:none; margin-bottom:10px;">
+                             <input type="number" id="inlineMins" placeholder="Minutos" style="width:100%; padding:5px;">
+                        </div>
+
+                        <div style="display:flex; gap:5px;">
+                            <button onclick="CyberManager.sesiones.cancelConfig()" style="flex:1; background:#95a5a6; color:white; padding:8px; border-radius:4px; font-size:0.8rem;">X</button>
+                            <button onclick="CyberManager.sesiones.confirmConfig('${pcName}', ${eq.id}, ${eq.precioHora})" style="flex:2; background:#27ae60; color:white; padding:8px; border-radius:4px; font-size:0.8rem; font-weight:bold;">INICIAR</button>
+                        </div>
                     </div>
-                    <div class="cost-container">
-                        <span class="cost-label">${session?.isCountdown ? 'PAGADO' : 'POR COBRAR'}</span>
-                        <div class="cost-preview" id="cost-${pcId}">${CyberManager.utils.formatMoney(0)}</div>
+                `;
+            } else {
+                // MODO NORMAL
+                let statusText = 'LIBRE';
+                let statusColor = '#2ecc71';
+                if (isActive) {
+                    statusText = session.isCountdown ? 'PREPAGO' : 'EN USO';
+                    statusColor = '#e67e22';
+                } else if (estado === 'mantenimiento') {
+                    statusText = 'MANTENIMIENTO';
+                    statusColor = '#e74c3c';
+                }
+
+                card.innerHTML = `
+                    <div class="pc-header">
+                        <span class="pc-name">${pcName}</span>
+                        <span class="status-badge" style="background:${statusColor}">${statusText}</span>
                     </div>
-                </div>
-                <div class="pc-footer">
-                    ${!isActive && estadoEquipo !== 'mantenimiento' ? 
-                        `<button class="btn-action start" onclick="startSession('${pcId}')">
-                            <i class="fas fa-play"></i> INICIAR
-                         </button>` : !isActive && estadoEquipo === 'mantenimiento' ?
-                        `<button class="btn-action" disabled>
-                            <i class="fas fa-wrench"></i> MANTENIMIENTO
-                         </button>` : 
-                        `<button class="btn-action stop" onclick="stopSession('${pcId}')">
-                            <i class="fas fa-hand-holding-usd"></i> COBRAR
-                         </button>`
-                    }
-                </div>
-            `;
+                    <div class="pc-body">
+                        <div class="timer-display" id="timer-${pcName}">00:00:00</div>
+                        <div class="cost-preview" id="cost-${pcName}" style="font-weight:bold; color:#555;">$0.00</div>
+                        <div style="font-size:0.75rem; color:#888; margin-top:5px;">${eq.tipo}</div>
+                    </div>
+                    <div class="pc-footer">
+                        ${!isActive && estado === 'disponible' ? 
+                            `<button class="btn-action start" onclick="CyberManager.sesiones.startConfig('${pcName}')" style="width:100%; background:#3498db; color:white; padding:10px; border-radius:6px; font-weight:bold;">INICIAR</button>` : 
+                          isActive ?
+                            `<button class="btn-action stop" onclick="stopSession('${pcName}', ${eq.id})" style="width:100%; background:#e67e22; color:white; padding:10px; border-radius:6px; font-weight:bold;">COBRAR</button>` :
+                            `<button disabled style="width:100%; background:#ccc; color:white; padding:10px; border-radius:6px;">BLOQUEADO</button>`
+                        }
+                    </div>
+                `;
+            }
             grid.appendChild(card);
-        }
+        });
+        this.updateStats();
     },
 
-    start: function(pcId) {
-        // primero verificar estado del equipo en el inventario y obtener tarifa
-        let tarifaEquipo = this.costPerHour;
-        try {
-            const equipos = JSON.parse(localStorage.getItem('cyberEquipos') || '[]');
-            const eq = equipos.find(e => e.id === pcId);
-            if (eq) {
-                if (eq.estado === 'mantenimiento') {
-                    CyberManager.ui.showMessage('error', `No se puede iniciar sesión: ${pcId} está en mantenimiento.`);
-                    return;
-                }
-                if (eq.estado === 'ocupado') {
-                    CyberManager.ui.showMessage('error', `El equipo ${pcId} ya figura como ocupado en inventario.`);
-                    return;
-                }
-                if (eq.tarifa !== undefined) {
-                    tarifaEquipo = parseFloat(eq.tarifa) || tarifaEquipo;
-                }
-            }
-        } catch (e) { /* ignorar error de parsing */ }
+    startConfig: function(pcName) {
+        this.configPcName = pcName;
+        this.renderPCGrid();
+    },
 
-        const clientName = prompt(`Nombre del cliente para ${pcId}:`, "Cliente General");
-        if (clientName === null) return;
+    cancelConfig: function() {
+        this.configPcName = null;
+        this.renderPCGrid();
+    },
 
-        const mode = confirm("¿Es tiempo PREPAGADO (Tiempo Fijo)?\n\nOK = Tiempo Fijo (Prepago)\nCancelar = Tiempo Libre");
-        
-        let limitMs = 0;
+    confirmConfig: async function(pcName, dbId, tarifa) {
+        const client = document.getElementById('inlineClient').value;
+        const mode = document.getElementById('inlineMode').value;
+        let mins = 0;
         let isCountdown = false;
 
-        if (mode) {
-            const minutes = parseInt(prompt("¿Cuántos minutos va a pagar?", "60"));
-            if (isNaN(minutes) || minutes <= 0) return;
-            limitMs = minutes * 60000;
+        if (mode === 'prepago') {
+            mins = parseInt(document.getElementById('inlineMins').value);
+            if (isNaN(mins) || mins <= 0) { alert("Minutos inválidos"); return; }
             isCountdown = true;
         }
 
-        this.sessions[pcId] = {
-            startTime: Date.now(),
-            limitMs: limitMs,
-            isCountdown: isCountdown,
-            client: clientName,
-            active: true,
-            rate: tarifaEquipo // tarifa/hora para esta sesión
-        };
-
-        // marcar equipo como ocupado en el inventario
         try {
-            const equipos = JSON.parse(localStorage.getItem('cyberEquipos') || '[]');
-            const idx = equipos.findIndex(e => e.id === pcId);
-            if (idx !== -1) {
-                equipos[idx].estado = 'ocupado';
-                localStorage.setItem('cyberEquipos', JSON.stringify(equipos));
-            }
-        } catch (e) { console.warn('no se pudo actualizar estado de equipo:', e); }
-        // si la página de equipos está abierta, renderizar de nuevo
-        if (typeof renderEquipos === 'function') renderEquipos();
+            // Guardar en DB
+            const resp = await fetch('/api/sesiones', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    cliente: client,
+                    equipo: pcName,
+                    total: isCountdown ? (mins/60)*tarifa : 0,
+                    estado: 'activa'
+                })
+            });
+            const sesionDB = await resp.json();
 
-        // incrementar el contador de clientes del día
-        try {
-            const clientesToday = parseInt(localStorage.getItem('clientes_hoy') || '0');
-            localStorage.setItem('clientes_hoy', (clientesToday + 1).toString());
-        } catch (e) { console.warn('no se pudo actualizar contador de clientes:', e); }
+            // Ocupar PC
+            const eqResp = await fetch(`/api/equipos/${dbId}`);
+            const eq = await eqResp.json();
+            eq.estado = 'OCUPADO';
+            await fetch(`/api/equipos/${dbId}`, {
+                method: 'PUT',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(eq)
+            });
 
-        this.saveSessions();
-        this.renderPCGrid();
-        this.updateStats();
-        CyberManager.ui.showMessage('success', `Sesión iniciada en ${pcId}`);
-    },
+            // Local
+            this.sessions[pcName] = {
+                dbId: dbId,
+                sessionDbId: sesionDB.id,
+                startTime: Date.now(),
+                limitMs: mins * 60000,
+                isCountdown: isCountdown,
+                client: client,
+                rate: tarifa
+            };
 
-    stop: function(pcId) {
-        const session = this.sessions[pcId];
-        if (!session) return;
-
-        const elapsedMs = Date.now() - session.startTime;
-        let finalCost = 0;
-        const rate = session.rate || this.costPerHour;
-
-        if (session.isCountdown) {
-            finalCost = (session.limitMs / 3600000) * rate;
-        } else {
-            finalCost = (elapsedMs / 3600000) * rate;
-        }
-        
-        const confirmMsg = `¿Cobrar ${CyberManager.utils.formatMoney(finalCost)} y liberar el equipo ${pcId}?`;
-
-        if (confirm(confirmMsg)) {
-            // 1. Sumar al ingreso total del día
-            this.totalCollected += finalCost;
-            
-            // 2. Eliminar sesión
-            delete this.sessions[pcId];
-
-            // también liberar equipo en inventario
-            try {
-                const equipos = JSON.parse(localStorage.getItem('cyberEquipos') || '[]');
-                const idx = equipos.findIndex(e => e.id === pcId);
-                if (idx !== -1) {
-                    equipos[idx].estado = 'disponible';
-                    localStorage.setItem('cyberEquipos', JSON.stringify(equipos));
-                }
-            } catch (e) { console.warn('no se pudo liberar equipo:', e); }
-            if (typeof renderEquipos === 'function') renderEquipos();
-            
-            // 3. Persistir y Refrescar
+            this.configPcName = null;
             this.saveSessions();
             this.renderPCGrid();
-            this.updateStats();
-            
-            CyberManager.ui.showMessage('success', `Venta registrada: +${CyberManager.utils.formatMoney(finalCost)}`);
-        }
+            CyberManager.ui.showMessage('success', `Sesión iniciada en ${pcName}`);
+        } catch (e) { console.error(e); }
     },
 
     startGlobalTimer: function() {
         setInterval(() => {
-            let currentEstimatedRevenue = 0;
-
-            for (const pcId in this.sessions) {
-                const session = this.sessions[pcId];
-                const diff = Date.now() - session.startTime;
+            let total = 0;
+            for (const pc in this.sessions) {
+                const s = this.sessions[pc];
+                const diff = Date.now() - s.startTime;
+                const timerEl = document.getElementById(`timer-${pc}`);
+                const costEl = document.getElementById(`cost-${pc}`);
                 
-                const timerEl = document.getElementById(`timer-${pcId}`);
-                const costEl = document.getElementById(`cost-${pcId}`);
-                
-                let sessionCost = 0;
-                const rate = session.rate || this.costPerHour;
-
-                if (session.isCountdown) {
-                    const remaining = session.limitMs - diff;
-                    sessionCost = (session.limitMs / 3600000) * rate;
-                    if (timerEl) {
-                        timerEl.textContent = this.formatTime(Math.max(0, remaining));
-                        if (remaining <= 0) timerEl.classList.add('timer-finished');
-                    }
+                let cost = 0;
+                if (s.isCountdown) {
+                    const rem = s.limitMs - diff;
+                    if (timerEl) timerEl.textContent = this.formatTime(Math.max(0, rem));
+                    cost = (s.limitMs / 3600000) * s.rate;
                 } else {
-                    sessionCost = (diff / 3600000) * rate;
                     if (timerEl) timerEl.textContent = this.formatTime(diff);
+                    cost = (diff / 3600000) * s.rate;
                 }
-
-                if (costEl) costEl.textContent = CyberManager.utils.formatMoney(sessionCost);
-                currentEstimatedRevenue += sessionCost;
+                if (costEl) costEl.textContent = CyberManager.utils.formatMoney(cost);
+                total += cost;
             }
-
-            // Actualizar el "Ingreso Estimado" en tiempo real en la tarjeta superior
-            const pendingRevenueEl = document.getElementById('pendingRevenue');
-            if (pendingRevenueEl) {
-                pendingRevenueEl.textContent = CyberManager.utils.formatMoney(this.totalCollected + currentEstimatedRevenue);
-            }
+            const revEl = document.getElementById('pendingRevenue');
+            if (revEl) revEl.textContent = CyberManager.utils.formatMoney(this.totalCollected + total);
         }, 1000);
     },
 
@@ -289,24 +230,39 @@ CyberManager.sesiones = {
     },
 
     updateStats: function() {
-        const activeCount = Object.keys(this.sessions).length;
-        
-        // Actualizar Badge de la barra lateral
+        const active = Object.keys(this.sessions).length;
         const badge = document.getElementById('activeCountBadge');
-        if (badge) badge.textContent = activeCount;
-
-        // Actualizar texto en la tarjeta de estadísticas ("X/20 Equipos")
-        const activeText = document.getElementById('activeCountText');
-        if (activeText) activeText.textContent = `${activeCount}/${this.totalPCs} Equipos en uso`;
-
-        // Actualizar el acumulado histórico en la UI
-        const pendingRevenueEl = document.getElementById('pendingRevenue');
-        if (pendingRevenueEl) {
-            pendingRevenueEl.textContent = CyberManager.utils.formatMoney(this.totalCollected);
-        }
+        if (badge) badge.textContent = active;
+        const text = document.getElementById('activeCountText');
+        if (text) text.textContent = `${active}/20 Equipos en uso`;
     }
 };
 
-// Exportar funciones de sesiones al scope global para usar en onclick
-window.startSession = (pcId) => CyberManager.sesiones.start(pcId);
-window.stopSession = (pcId) => CyberManager.sesiones.stop(pcId);
+window.stopSession = (pc, dbId) => {
+    const s = CyberManager.sesiones.sessions[pc];
+    if (!s) return;
+    const elapsed = Date.now() - s.startTime;
+    const finalCost = s.isCountdown ? (s.limitMs/3600000)*s.rate : (elapsed/3600000)*s.rate;
+
+    if (confirm(`¿Cobrar ${CyberManager.utils.formatMoney(finalCost)}?`)) {
+        fetch(`/api/sesiones/${s.sessionDbId}/finalizar`, {
+            method: 'PUT',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({total: finalCost})
+        }).then(() => {
+            return fetch(`/api/equipos/${dbId}`).then(r => r.json()).then(eq => {
+                eq.estado = 'DISPONIBLE';
+                return fetch(`/api/equipos/${dbId}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify(eq)
+                });
+            });
+        }).then(() => {
+            CyberManager.sesiones.totalCollected += finalCost;
+            delete CyberManager.sesiones.sessions[pc];
+            CyberManager.sesiones.saveSessions();
+            CyberManager.sesiones.renderPCGrid();
+        });
+    }
+};

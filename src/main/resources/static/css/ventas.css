@@ -76,6 +76,27 @@
     margin: 15px 0;
 }
 
+/* Modo Oscuro para Ventas */
+body.dark-mode .cart-section, 
+body.dark-mode .product-card,
+body.dark-mode .tab-btn {
+    background-color: #1e1e1e !important;
+    border-color: #333 !important;
+    color: #f0f0f0 !important;
+}
+
+body.dark-mode .summary-item span:first-child {
+    color: #bbb;
+}
+
+body.dark-mode .item-name {
+    color: #fff;
+}
+
+body.dark-mode .stock-tag {
+    color: #888;
+}
+
 .cart-item {
     display: flex;
     justify-content: space-between;

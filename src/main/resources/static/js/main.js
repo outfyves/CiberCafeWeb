@@ -14,27 +14,84 @@ const CyberManager = {
     // --- Inicialización Principal ---
     init: function() {
         document.addEventListener('DOMContentLoaded', () => {
+            this.applyTheme(); // Aplicar Modo Oscuro si está activo
             this.components.dateTime();
             this.components.sidebar();
             this.components.passwordToggle();
             this.components.search();
             this.components.notifications();
+            this.updateGlobalNotifications(); // Cargar notificaciones reales
             this.ui.animateElements();
             this.ui.initTooltips();
             this.applyBranding(); // actualizar nombre y título según configuración
+
+            // Refrescar notificaciones cada 30s
+            setInterval(() => this.updateGlobalNotifications(), 30000);
         });
     },
 
-    // --- Branding global ---
-    applyBranding: function() {
+    // --- Aplicar Tema (Modo Oscuro) ---
+    applyTheme: function() {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+    },
+
+    // --- Notificaciones Globales desde DB ---
+    updateGlobalNotifications: async function() {
+        let count = 0;
         try {
-            const settings = window.getSystemSettings ? window.getSystemSettings() : {};
+            // 1. Equipos en mantenimiento
+            const respEq = await fetch('/api/equipos');
+            const equipos = await respEq.json();
+            const mantCount = equipos.filter(e => e.estado.toLowerCase() === 'mantenimiento').length;
+            if (mantCount > 0) count++;
+
+            // Actualizar Badge de Equipos en la barra lateral
+            const totalEquipos = equipos.length;
+            const availableEquipos = equipos.filter(e => e.estado.toLowerCase() === 'disponible').length;
+            const navEquiposBadge = document.getElementById('navEquiposBadge');
+            if (navEquiposBadge) {
+                navEquiposBadge.textContent = `${availableEquipos}/${totalEquipos}`;
+            }
+
+            // 2. Stock bajo de productos
+            const respProd = await fetch('/api/productos');
+            if (respProd.ok) {
+                const productos = await respProd.json();
+                const lowStock = productos.filter(p => p.stock < 5).length;
+                if (lowStock > 0) count++;
+            }
+
+            // 3. Clientes morosos
+            const respCli = await fetch('/api/clientes');
+            const clientes = await respCli.json();
+            const morosos = clientes.filter(c => (c.estado || '').toLowerCase() === 'moroso').length;
+            if (morosos > 0) count++;
+        } catch (e) {
+            console.warn('Error al actualizar notificaciones globales:', e);
+        }
+
+        const badges = document.querySelectorAll('.notifications .badge');
+        badges.forEach(b => {
+            b.textContent = count;
+            b.style.display = count > 0 ? 'flex' : 'none';
+        });
+    },
+
+    // --- Branding global desde DB ---
+    applyBranding: async function() {
+        try {
+            const resp = await fetch('/api/configuracion');
+            const settings = await resp.json();
             const name = settings.businessName || 'CyberManager';
             const logoText = document.querySelector('.logo h2');
             if (logoText) logoText.textContent = name;
             document.title = `${name} - Sistema de Gestión`;
         } catch (e) {
-            // no importa si falla
+            console.warn('Error aplicando branding:', e);
         }
     },
 
@@ -56,11 +113,23 @@ const CyberManager = {
             setInterval(update, 60000);
         },
 
-        // Sidebar Colapsable
+        // Sidebar Colapsable y Estado Activo
         sidebar: function() {
             const btn = document.getElementById('toggleSidebar');
             const sidebar = document.querySelector('.sidebar');
             const main = document.querySelector('.main-content');
+            
+            // Marcar enlace activo automáticamente
+            const currentPath = window.location.pathname.split('/').pop() || 'dashboard.html';
+            document.querySelectorAll('.sidebar-menu ul li a').forEach(link => {
+                const linkPath = link.getAttribute('href');
+                if (linkPath === currentPath) {
+                    link.parentElement.classList.add('active');
+                } else {
+                    link.parentElement.classList.remove('active');
+                }
+            });
+
             if (!btn || !sidebar) return;
 
             btn.addEventListener('click', () => {

@@ -44,9 +44,9 @@ function renderClientes(dataFiltrada = clientes) {
     tableBody.innerHTML = '';
 
     dataFiltrada.forEach(cliente => {
-        // Mapeo de campos: id -> id, nombre -> nombre, correo -> email en el diseño
+        const estado = (cliente.estado || 'activo').toLowerCase();
         const card = document.createElement('div');
-        card.className = `cliente-card activo`; // Por defecto activo para el diseño
+        card.className = `cliente-card ${estado}`;
         card.innerHTML = `
             <div class="cliente-header">
                 <div class="cliente-avatar"><i class="fas fa-user"></i></div>
@@ -54,7 +54,7 @@ function renderClientes(dataFiltrada = clientes) {
                     <h3>${cliente.nombre} ${cliente.apellido || ''}</h3>
                     <span class="cliente-id">ID: ${cliente.id}</span>
                 </div>
-                <span class="cliente-status activo">ACTIVO</span>
+                <span class="cliente-status ${estado}">${estado.toUpperCase()}</span>
             </div>
             <div class="cliente-details">
                 <div class="detail-item">
@@ -84,7 +84,7 @@ function renderClientes(dataFiltrada = clientes) {
             <td>${cliente.cedula}</td>
             <td>${cliente.correo}</td>
             <td>${cliente.telefono}</td>
-            <td><span class="status-indicator activo"></span> Activo</td>
+            <td><span class="status-indicator ${estado}"></span> ${estado.charAt(0).toUpperCase() + estado.slice(1)}</td>
             <td>
                 <button class="btn-sm btn-edit" onclick="editarCliente(${cliente.id})"><i class="fas fa-edit"></i></button>
                 <button class="btn-sm btn-delete" onclick="eliminarCliente(${cliente.id})"><i class="fas fa-trash"></i></button>
@@ -92,13 +92,14 @@ function renderClientes(dataFiltrada = clientes) {
         `;
         tableBody.appendChild(row);
     });
+    updateClienteStats();
 }
 
 // 3. Búsqueda y Filtros
 function filterClientesByName(query) {
     const filtrados = clientes.filter(c => 
-        c.nombre.toLowerCase().includes(query.toLowerCase()) || 
-        c.cedula.includes(query)
+        (c.nombre && c.nombre.toLowerCase().includes(query.toLowerCase())) || 
+        (c.cedula && c.cedula.includes(query))
     );
     renderClientes(filtrados);
 }
@@ -107,9 +108,9 @@ function initFiltersClientes() {
     const applyBtn = document.getElementById('applyFiltersClientes');
     if (applyBtn) {
         applyBtn.addEventListener('click', function() {
-            // Implementar filtros adicionales si la DB los soporta
-            renderClientes();
-            CyberManager.showMessage('info', `Mostrando todos los clientes`);
+            const estadoFiltro = document.getElementById('filterEstado').value.toLowerCase();
+            const filtrados = estadoFiltro ? clientes.filter(c => (c.estado || 'activo').toLowerCase() === estadoFiltro) : clientes;
+            renderClientes(filtrados);
         });
     }
 }
@@ -118,9 +119,9 @@ function initFiltersClientes() {
 function updateClienteStats() {
     const stats = {
         total: clientes.length,
-        activos: clientes.length, // Por ahora simplificado
-        inactivos: 0,
-        morosos: 0
+        activos: clientes.filter(c => (c.estado || 'activo').toLowerCase() === 'activo').length,
+        inactivos: clientes.filter(c => (c.estado || 'activo').toLowerCase() === 'inactivo').length,
+        morosos: clientes.filter(c => (c.estado || 'activo').toLowerCase() === 'moroso').length
     };
 
     const totalEl = document.querySelector('.stat-cliente.total .stat-value');
@@ -128,6 +129,16 @@ function updateClienteStats() {
     
     const activosEl = document.querySelector('.stat-cliente.activos .stat-value');
     if(activosEl) activosEl.textContent = stats.activos;
+
+    const inactivosEl = document.querySelector('.stat-cliente.inactivos .stat-value');
+    if(inactivosEl) inactivosEl.textContent = stats.inactivos;
+
+    const morososEl = document.querySelector('.stat-cliente.morosos .stat-value');
+    if(morososEl) morososEl.textContent = stats.morosos;
+
+    // Badge lateral
+    const badge = document.getElementById('navClientesBadge');
+    if (badge) badge.textContent = stats.total;
 }
 
 // 5. Eliminar Cliente Real
@@ -137,7 +148,6 @@ window.eliminarCliente = async function(id) {
             const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             if (response.ok) {
                 await cargarClientes();
-                updateClienteStats();
                 CyberManager.showMessage('success', 'Cliente eliminado de la base de datos');
             }
         } catch (error) {
@@ -155,11 +165,12 @@ window.editarCliente = function(id) {
     const modal = document.getElementById('clienteModal');
     const form = document.getElementById('clienteForm');
     
-    // Llenar campos (ajustados a los IDs de tu HTML)
+    // Llenar campos
     document.getElementById('cedulaCliente').value = cliente.cedula || '';
-    document.getElementById('nombreCliente').value = cliente.nombre;
-    document.getElementById('emailCliente').value = cliente.correo;
-    document.getElementById('telefonoCliente').value = cliente.telefono;
+    document.getElementById('nombreCliente').value = cliente.nombre || '';
+    document.getElementById('emailCliente').value = cliente.correo || '';
+    document.getElementById('telefonoCliente').value = cliente.telefono || '';
+    document.getElementById('estadoCliente').value = (cliente.estado || 'activo').toLowerCase();
     
     modal.dataset.editId = id;
     modal.classList.add('show');
@@ -191,9 +202,10 @@ function initClienteModal() {
             const clienteData = {
                 cedula: document.getElementById('cedulaCliente').value,
                 nombre: document.getElementById('nombreCliente').value,
-                apellido: "", // Campo opcional por ahora
+                apellido: "", // Campo opcional
                 correo: document.getElementById('emailCliente').value,
-                telefono: document.getElementById('telefonoCliente').value
+                telefono: document.getElementById('telefonoCliente').value,
+                estado: document.getElementById('estadoCliente').value
             };
 
             try {
@@ -208,7 +220,6 @@ function initClienteModal() {
 
                 if (response.ok) {
                     await cargarClientes();
-                    updateClienteStats();
                     modal.classList.remove('show');
                     form.reset();
                     CyberManager.showMessage('success', id ? 'Cliente actualizado' : 'Cliente registrado');

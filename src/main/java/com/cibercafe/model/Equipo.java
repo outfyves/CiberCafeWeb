@@ -8,7 +8,8 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 
 /**
- * Entidad Equipo ajustada a la base de datos existente.
+ * Entidad que representa un Equipo (PC) dentro del inventario del cibercafé.
+ * Controla el estado del hardware y la tarifa configurada.
  */
 @Entity
 @Table(name = "equipos")
@@ -20,19 +21,20 @@ public class Equipo {
     private Long id;
 
     @Column(name = "numero_equipo")
-    private String nombre; // Lo mapeamos a nombre para no romper el JS
+    private String nombre; // Ejemplo: PC-01
 
     @Column(name = "descripcion")
-    private String tipo;   // Lo mapeamos a tipo para no romper el JS
+    private String tipo;   // Especificaciones técnicas
 
     @Column(name = "estado")
-    private String estado;
+    private String estado; // DISPONIBLE, OCUPADO, MANTENIMIENTO
 
-    // Como en tu DB actual no hay precio_hora, lo dejamos como opcional o nulo por ahora
+    @Column(name = "precio_hora")
     private Double precioHora;
 
     public Equipo() {}
 
+    // Getters y Setters estándar
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

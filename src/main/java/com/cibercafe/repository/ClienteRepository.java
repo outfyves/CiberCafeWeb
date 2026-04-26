@@ -1,3 +1,6 @@
+/**
+ * Repositorio para acceso a datos de Clientes.
+ */
 package com.cibercafe.repository;
 
 import com.cibercafe.model.Cliente;

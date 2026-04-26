@@ -8,34 +8,26 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function initEquipmentPage() {
-    // 1. Cargar y renderizar datos reales
     await cargarEquipos();
-    
-    // refresca continuamente
-    setInterval(cargarEquipos, 10000); // cada 10 segundos para no saturar
+    setInterval(cargarEquipos, 15000);
 
-    // 2. Referencias a elementos del DOM
     const addEquipmentBtn = document.getElementById('addEquipmentBtn');
     const modal = document.getElementById('equipoModal');
     const equipmentForm = document.getElementById('equipoForm');
     
-    // 3. Abrir Modal para Nuevo Equipo
     if (addEquipmentBtn) {
         addEquipmentBtn.addEventListener('click', () => {
             delete modal.dataset.editId;
-            const modalTitle = modal.querySelector('.modal-header h3');
-            if (modalTitle) modalTitle.innerHTML = '<i class="fas fa-desktop"></i> Nuevo Equipo';
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-desktop"></i> Nuevo Equipo';
             equipmentForm.reset();
             modal.classList.add('show');
         });
     }
 
-    // 4. Cerrar Modales
     document.querySelectorAll('.close-modal, #cancelModal').forEach(btn => {
         btn.addEventListener('click', () => modal.classList.remove('show'));
     });
 
-    // 5. Guardar / Editar Equipo
     if (equipmentForm) {
         equipmentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -43,7 +35,23 @@ async function initEquipmentPage() {
         });
     }
 
-    // Toggle de vista (Grid/Lista)
+    // Filtros
+    const applyFiltersBtn = document.getElementById('applyFilters');
+    if (applyFiltersBtn) {
+        applyFiltersBtn.addEventListener('click', () => {
+            applyRealFilters();
+        });
+    }
+
+    const clearFiltersBtn = document.getElementById('clearFilters');
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', () => {
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterType').value = '';
+            renderEquipos(equipos);
+        });
+    }
+
     initViewToggle();
 }
 
@@ -89,31 +97,28 @@ async function guardarEquipo() {
     }
 }
 
-window.deleteEquipo = async function(id) {
-    if (confirm(`¿Seguro que deseas eliminar el equipo con ID ${id}?`)) {
-        try {
-            const response = await fetch(`${API_EQUIPOS}/${id}`, { method: 'DELETE' });
-            if (response.ok) {
-                await cargarEquipos();
-                CyberManager.showMessage('success', 'Equipo eliminado');
-            }
-        } catch (error) {
-            console.error('Error al eliminar:', error);
-        }
-    }
-};
+function applyRealFilters() {
+    const status = document.getElementById('filterStatus').value;
+    const type = document.getElementById('filterType').value;
+
+    const filtrados = equipos.filter(eq => {
+        const matchStatus = status === '' || eq.estado === status;
+        const matchType = type === '' || eq.tipo.includes(type);
+        return matchStatus && matchType;
+    });
+
+    renderEquipos(filtrados);
+}
 
 window.editarEquipo = function(id) {
     const equipo = equipos.find(e => e.id == id);
     if (!equipo) return;
 
     const modal = document.getElementById('equipoModal');
-    const modalTitle = modal.querySelector('.modal-header h3');
-    
-    if (modalTitle) modalTitle.innerHTML = '<i class="fas fa-edit"></i> Editar Equipo';
+    document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Editar Equipo';
     
     document.getElementById('nombreEquipo').value = equipo.nombre;
-    document.getElementById('tipoEquipo').value = equipo.tipo;
+    document.getElementById('tipoEquipo').value = equipo.tipo || '';
     document.getElementById('estadoEquipo').value = equipo.estado;
     document.getElementById('tarifaEquipo').value = equipo.precioHora || '';
 
@@ -121,11 +126,10 @@ window.editarEquipo = function(id) {
     modal.classList.add('show');
 };
 
-function renderEquipos() {
-    // Renderizar Grid
+function renderEquipos(data = equipos) {
     const grid = document.getElementById('equiposGrid');
     if (grid) {
-        grid.innerHTML = equipos.map(e => `
+        grid.innerHTML = data.map(e => `
             <div class="equipo-card ${e.estado.toLowerCase()}">
                 <div class="equipo-header">
                     <div class="equipo-info">
@@ -134,54 +138,50 @@ function renderEquipos() {
                     </div>
                     <div class="equipo-status ${e.estado.toLowerCase()}">${e.estado}</div>
                 </div>
-                
                 <div class="equipo-details">
-                    <div class="detail-row">
-                        <span class="detail-label">Tipo:</span>
-                        <span class="detail-value">${e.tipo.toUpperCase()}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Tarifa:</span>
-                        <span class="detail-value">$${(e.precioHora || 0).toFixed(2)} / hr</span>
-                    </div>
+                    <div class="detail-row"><span class="detail-label">Tipo:</span> <span class="detail-value">${e.tipo}</span></div>
+                    <div class="detail-row"><span class="detail-label">Tarifa:</span> <span class="detail-value">$${(e.precioHora || 0).toFixed(2)}/h</span></div>
                 </div>
-                
                 <div class="equipo-actions">
-                    <button class="btn btn-secondary btn-sm" onclick="editarEquipo(${e.id})">
-                        <i class="fas fa-edit"></i> Editar
-                    </button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteEquipo(${e.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="editarEquipo(${e.id})"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteEquipo(${e.id})"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
         `).join('');
     }
+    updateStats(data);
+}
 
-    // Actualizar estadísticas sencillas
-    const totalEl = document.getElementById('totalEquipos');
-    if (totalEl) totalEl.textContent = equipos.length;
+function updateStats(data = equipos) {
+    const total = data.length;
+    const disp = data.filter(e => e.estado === 'DISPONIBLE').length;
+    const ocup = data.filter(e => e.estado === 'OCUPADO').length;
+    const mant = data.filter(e => e.estado === 'MANTENIMIENTO').length;
+
+    document.getElementById('totalEquipos').textContent = total;
+    document.getElementById('equiposDisponibles').textContent = disp;
+    document.getElementById('equiposOcupados').textContent = ocup;
+    document.getElementById('equiposMantenimiento').textContent = mant;
+
+    const updateBar = (selector, val, t) => {
+        const bar = document.querySelector(selector);
+        if (bar) bar.style.width = t > 0 ? `${(val/t)*100}%` : '0%';
+    };
+
+    updateBar('.stat-equipo.total .usage-fill', total, total);
+    updateBar('.stat-equipo.disponible .usage-fill', disp, total);
+    updateBar('.stat-equipo.ocupado .usage-fill', ocup, total);
+    updateBar('.stat-equipo.mantenimiento .usage-fill', mant, total);
 }
 
 function initViewToggle() {
-    const viewGridBtn = document.getElementById('viewGrid');
-    const viewListBtn = document.getElementById('viewList');
+    const vg = document.getElementById('viewGrid');
+    const vl = document.getElementById('viewList');
     const grid = document.getElementById('equiposGrid');
     const list = document.getElementById('equiposList');
 
-    if (viewGridBtn && viewListBtn) {
-        viewGridBtn.addEventListener('click', () => {
-            viewGridBtn.classList.add('active');
-            viewListBtn.classList.remove('active');
-            if (grid) grid.style.display = 'grid';
-            if (list) list.style.display = 'none';
-        });
-
-        viewListBtn.addEventListener('click', () => {
-            viewListBtn.classList.add('active');
-            viewGridBtn.classList.remove('active');
-            if (grid) grid.style.display = 'none';
-            if (list) list.style.display = 'block';
-        });
+    if (vg && vl) {
+        vg.onclick = () => { vg.classList.add('active'); vl.classList.remove('active'); grid.style.display='grid'; list.style.display='none'; };
+        vl.onclick = () => { vl.classList.add('active'); vg.classList.remove('active'); grid.style.display='none'; list.style.display='block'; };
     }
 }

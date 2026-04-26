@@ -9,8 +9,118 @@
     <link rel="stylesheet" href="css/sesiones.css"> 
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Corrección de emergencia para el Modal */
+        .modal {
+            display: none;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background-color: rgba(0, 0, 0, 0.8) !important;
+            z-index: 99999 !important;
+            align-items: center !important;
+            justify-content: center !important;
+            backdrop-filter: blur(5px);
+        }
+        .modal.show {
+            display: flex !important;
+        }
+        .modal-content {
+            background: white !important;
+            border-radius: 15px !important;
+            width: 90% !important;
+            max-width: 500px !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+            animation: modalSlide 0.3s ease-out;
+        }
+        @keyframes modalSlide {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body { padding: 25px; }
+        .btn-preset {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: #f8f9fa;
+            border-radius: 5px;
+            margin: 2px;
+            cursor: pointer;
+        }
+        .btn-preset:hover { background: #3498db; color: white; }
+        .time-presets { margin: 15px 0; }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
+    <!-- Menú de Inicio de Sesión (Blindado contra caché) -->
+    <div id="startSessionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 999999; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div style="background: white; width: 90%; max-width: 450px; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;">
+            <div style="background: #2c3e50; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 1.1rem;"><i class="fas fa-play-circle"></i> Iniciar en <span id="modalPcName">PC</span></h3>
+                <button onclick="closeStartModal()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <div style="padding: 20px;">
+                <form id="startSessionForm">
+                    <input type="hidden" id="modalDbId">
+                    <input type="hidden" id="modalTarifa">
+                    
+                    <label style="display: block; font-weight: bold; margin-bottom: 5px;">Seleccionar Cliente:</label>
+                    <select id="selectCliente" class="form-control" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px;">
+                        <option value="Cliente General">-- Cliente General --</option>
+                    </select>
+
+                    <label style="display: block; font-weight: bold; margin-bottom: 5px;">Modo de Tiempo:</label>
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                        <label><input type="radio" name="timeMode" value="libre" checked onchange="toggleTimeSelector()"> Libre</label>
+                        <label><input type="radio" name="timeMode" value="prepago" onchange="toggleTimeSelector()"> Prepago</label>
+                    </div>
+
+                    <div id="prepagoOptions" style="display: none; background: #f0f2f5; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 10px;">
+                            <button type="button" class="btn-preset" onclick="setPresetTime(30)">30m</button>
+                            <button type="button" class="btn-preset" onclick="setPresetTime(60)">1h</button>
+                            <button type="button" class="btn-preset" onclick="setPresetTime(120)">2h</button>
+                        </div>
+                        <input type="number" id="inputMinutes" class="form-control" placeholder="Minutos..." oninput="updateTimeConversion()">
+                        <small id="timeConversion" style="display: block; margin-top: 5px; color: #555;"></small>
+                    </div>
+
+                    <div style="border-top: 1px solid #eee; padding-top: 15px; margin-top: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>Tarifa/h:</span> <strong id="previewTarifa">$0</strong>
+                        </div>
+                        <div id="previewTotalRow" style="display: none; justify-content: space-between; color: #27ae60; font-size: 1.1rem;">
+                            <span>Total:</span> <strong id="previewTotal">$0</strong>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button type="button" onclick="closeStartModal()" style="flex: 1; padding: 12px; border-radius: 6px; background: #95a5a6; color: white; font-weight: bold;">CANCELAR</button>
+                        <button type="submit" style="flex: 1; padding: 12px; border-radius: 6px; background: #27ae60; color: white; font-weight: bold;">INICIAR</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="app-container">
         <nav class="sidebar">
             <div class="sidebar-header">
@@ -26,13 +136,13 @@
             <div class="sidebar-menu">
                 <ul>
                     <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i><span>Panel Principal</span></a></li>
-                    <li><a href="equipos.html"><i class="fas fa-desktop"></i><span>Gestión de Equipos</span></a></li>
-                    <li><a href="clientes.html"><i class="fas fa-users"></i><span>Gestión de Clientes</span></a></li>
+                    <li><a href="equipos.html"><i class="fas fa-desktop"></i><span>Gestión de Equipos</span><span class="badge" id="navEquiposBadge" style="margin-left: auto;"></span></a></li>
+                    <li><a href="clientes.html"><i class="fas fa-users"></i><span>Gestión de Clientes</span><span class="badge" id="navClientesBadge" style="margin-left: auto;"></span></a></li>
                     <li class="active">
                         <a href="sesiones.html">
                             <i class="fas fa-clock"></i>
-                            <span>Control de Sesiones</span>
-                            <span class="badge active-sessions" id="activeCountBadge">0</span>
+                            <span>Control de Sesiones</span><span class="badge" id="navSessionsBadge" style="margin-left: auto;"></span>
+                            
                         </a>
                     </li>
                     <li><a href="ventas.html"><i class="fas fa-cash-register"></i><span>Punto de Venta</span></a></li>

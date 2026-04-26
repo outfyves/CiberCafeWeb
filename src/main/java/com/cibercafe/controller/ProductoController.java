@@ -39,17 +39,25 @@ public class ProductoController {
     private void crearProductosIniciales() {
         List<Producto> iniciales = new ArrayList<>();
         
-        Producto p1 = new Producto();
-        p1.setNombre("Coca Cola 600ml"); p1.setCategoria("bebidas"); p1.setPrecio(18.0); p1.setStock(24); p1.setIcono("fa-wine-bottle");
-        iniciales.add(p1);
+        // Bebidas
+        iniciales.add(new Producto("Coca Cola 600ml", "bebidas", 18.0, 24, "fa-wine-bottle"));
+        iniciales.add(new Producto("Agua Natural", "bebidas", 12.0, 15, "fa-tint"));
+        iniciales.add(new Producto("Café Americano", "bebidas", 15.0, 30, "fa-coffee"));
+        iniciales.add(new Producto("Energizante RedBull", "bebidas", 45.0, 10, "fa-bolt"));
+        iniciales.add(new Producto("Té Frío", "bebidas", 20.0, 12, "fa-leaf"));
 
-        Producto p2 = new Producto();
-        p2.setNombre("Papas Originales"); p2.setCategoria("snacks"); p2.setPrecio(15.0); p2.setStock(10); p2.setIcono("fa-cookie");
-        iniciales.add(p2);
+        // Snacks
+        iniciales.add(new Producto("Papas Originales", "snacks", 15.0, 10, "fa-cookie"));
+        iniciales.add(new Producto("Galletas de Chocolate", "snacks", 12.0, 20, "fa-cookie-bite"));
+        iniciales.add(new Producto("Sándwich de Jamón", "snacks", 35.0, 5, "fa-bread-slice"));
+        iniciales.add(new Producto("Chocolatina Jet", "snacks", 5.0, 50, "fa-candy-cane"));
+        iniciales.add(new Producto("Maní Salado", "snacks", 10.0, 15, "fa-seedling"));
 
-        Producto p3 = new Producto();
-        p3.setNombre("Agua Natural"); p3.setCategoria("bebidas"); p3.setPrecio(12.0); p3.setStock(15); p3.setIcono("fa-tint");
-        iniciales.add(p3);
+        // Servicios / Otros
+        iniciales.add(new Producto("Impresión B/N", "servicios", 2.0, 500, "fa-print"));
+        iniciales.add(new Producto("Impresión Color", "servicios", 5.0, 200, "fa-palette"));
+        iniciales.add(new Producto("Escaneo de Documento", "servicios", 10.0, 100, "fa-copy"));
+        iniciales.add(new Producto("Audífonos (Venta)", "otros", 150.0, 5, "fa-headphones"));
 
         productoRepository.saveAll(iniciales);
     }

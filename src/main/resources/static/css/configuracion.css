@@ -6,10 +6,11 @@
 }
 
 .settings-card {
-    background: white;
+    background: var(--bg-white);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-light);
     overflow: hidden;
+    border: 1px solid var(--border-color);
 }
 
 .card-header {
@@ -18,6 +19,37 @@
     font-weight: 700;
     color: var(--secondary-color);
     border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Modo Oscuro para Configuración */
+body.dark-mode .settings-card {
+    background-color: #1e1e1e !important;
+    border-color: #333 !important;
+    color: #f0f0f0 !important;
+}
+
+body.dark-mode .card-header {
+    background-color: #252525;
+    color: #5dade2; /* Azul brillante para títulos */
+    border-bottom-color: #333;
+}
+
+body.dark-mode .btn-action {
+    background-color: #2d2d2d;
+    color: #5dade2;
+    border-color: #5dade2;
+}
+
+body.dark-mode .btn-action:hover {
+    background-color: #5dade2;
+    color: #111;
+}
+
+body.dark-mode .help-text {
+    color: #aaa;
 }
 
 .card-body {

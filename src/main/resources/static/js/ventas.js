@@ -41,11 +41,16 @@ CyberManager.ventas = {
         });
     },
 
-    renderProducts: function() {
+    renderProducts: function(data = this.inventory) {
         const grid = document.getElementById('productsGrid');
         if (!grid) return;
 
-        grid.innerHTML = this.inventory.map(prod => `
+        if (data.length === 0) {
+            grid.innerHTML = '<p class="text-center text-muted" style="grid-column: 1/-1; padding: 20px;">No hay productos en esta categoría</p>';
+            return;
+        }
+
+        grid.innerHTML = data.map(prod => `
             <div class="product-card ${prod.stock <= 0 ? 'out-of-stock' : ''}" 
                  onclick="${prod.stock > 0 ? `addToCart(${prod.id})` : ''}">
                 <div class="product-icon"><i class="fas ${prod.icono}"></i></div>
@@ -57,6 +62,24 @@ CyberManager.ventas = {
                 ${prod.stock <= 0 ? '<div class="badge-oos">Agotado</div>' : ''}
             </div>
         `).join('');
+    },
+
+    filterCategory: function(category) {
+        // Actualizar UI de pestañas
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.textContent.toLowerCase() === category.toLowerCase() || 
+                (category === 'todos' && btn.textContent.toLowerCase() === 'todos')) {
+                btn.classList.add('active');
+            }
+        });
+
+        if (category === 'todos') {
+            this.renderProducts(this.inventory);
+        } else {
+            const filtered = this.inventory.filter(p => p.categoria.toLowerCase() === category.toLowerCase());
+            this.renderProducts(filtered);
+        }
     },
 
     renderInventory: function() {
@@ -107,24 +130,31 @@ CyberManager.ventas = {
 
     updateCartUI: function() {
         const list = document.getElementById('cartList');
+        const subtotalEl = document.getElementById('subtotal');
         const totalEl = document.getElementById('total');
         if (!list) return;
 
         list.innerHTML = this.cart.length === 0 
-            ? '<p class="text-center text-muted">El carrito está vacío</p>'
+            ? '<p class="text-center text-muted" style="padding: 10px;">El carrito está vacío</p>'
             : this.cart.map((item, index) => `
                 <div class="cart-item">
                     <div class="item-details">
-                        <span class="item-name">${item.nombre}</span>
+                        <span class="item-name"><strong>${item.nombre}</strong></span>
                         <span class="item-qty">x${item.cantidad}</span>
                     </div>
                     <span class="item-price">$${(item.precio * item.cantidad).toFixed(2)}</span>
-                    <button class="btn-remove" onclick="removeFromCart(${index})">&times;</button>
+                    <button class="btn-remove" onclick="removeFromCart(${index})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-weight:bold; margin-left:10px;">&times;</button>
                 </div>
             `).join('');
 
         const total = this.cart.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+        if (subtotalEl) subtotalEl.textContent = `$${total.toFixed(2)}`;
         if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+    },
+
+    clearCart: function() {
+        this.cart = [];
+        this.updateCartUI();
     },
 
     removeFromCart: function(index) {
@@ -187,7 +217,4 @@ CyberManager.ventas = {
 window.addToCart = (id) => CyberManager.ventas.addToCart(id);
 window.removeFromCart = (index) => CyberManager.ventas.removeFromCart(index);
 window.restock = (id) => CyberManager.ventas.restock(id);
-window.filterCategory = (cat) => {
-    // Implementar si es necesario, por ahora recarga
-    CyberManager.ventas.loadInventory().then(() => CyberManager.ventas.renderProducts());
-};
+window.filterCategory = (cat) => CyberManager.ventas.filterCategory(cat);

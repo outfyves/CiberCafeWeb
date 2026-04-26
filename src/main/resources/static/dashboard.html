@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,12 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="icon" type="image/png" href="https://images.icon-icons.com/3645/PNG/256/offer_discount_sales_monday_cyber_icon_227974.png">
+    <link rel="icon" type="image/png"
+        href="https://images.icon-icons.com/3645/PNG/256/offer_discount_sales_monday_cyber_icon_227974.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar Navigation -->
@@ -24,7 +27,7 @@
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
-            
+
             <div class="sidebar-menu">
                 <ul>
                     <li class="active">
@@ -36,19 +39,19 @@
                     <li>
                         <a href="equipos.html">
                             <i class="fas fa-desktop"></i>
-                            <span>Gestión de Equipos</span>
+                            <span>Gestión de Equipos</span><span class="badge" id="navEquiposBadge" style="margin-left: auto;"></span>
                         </a>
                     </li>
                     <li>
                         <a href="clientes.html">
                             <i class="fas fa-users"></i>
-                            <span>Gestión de Clientes</span>
+                            <span>Gestión de Clientes</span><span class="badge" id="navClientesBadge" style="margin-left: auto;"></span>
                         </a>
                     </li>
                     <li>
                         <a href="sesiones.html">
                             <i class="fas fa-clock"></i>
-                            <span>Control de Sesiones</span>
+                            <span>Control de Sesiones</span><span class="badge" id="navSessionsBadge" style="margin-left: auto;"></span>
                         </a>
                     </li>
                     <li>
@@ -71,7 +74,7 @@
                     </li>
                 </ul>
             </div>
-            
+
             <div class="sidebar-footer">
                 <div class="user-info">
                     <div class="user-avatar">
@@ -87,7 +90,7 @@
                 </a>
             </div>
         </nav>
-        
+
         <!-- Main Content -->
         <main class="main-content">
             <header class="main-header">
@@ -106,7 +109,7 @@
                     </div>
                 </div>
             </header>
-            
+
             <div class="content-wrapper">
                 <!-- Dashboard Stats -->
                 <div class="dashboard-stats">
@@ -120,7 +123,7 @@
                             <p class="stat-change positive" id="changeIngreso"></p>
                         </div>
                     </div>
-                    
+
                     <div class="stat-card">
                         <div class="stat-icon sessions">
                             <i class="fas fa-clock"></i>
@@ -131,7 +134,7 @@
                             <p class="stat-change" id="changeSesiones"></p>
                         </div>
                     </div>
-                    
+
                     <div class="stat-card">
                         <div class="stat-icon clients">
                             <i class="fas fa-users"></i>
@@ -142,7 +145,7 @@
                             <p class="stat-change positive" id="changeClientes"></p>
                         </div>
                     </div>
-                    
+
                     <div class="stat-card">
                         <div class="stat-icon equipment">
                             <i class="fas fa-desktop"></i>
@@ -154,7 +157,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Charts and Tables -->
                 <div class="dashboard-content">
                     <div class="chart-container">
@@ -170,7 +173,7 @@
                             <canvas id="revenueChart"></canvas>
                         </div>
                     </div>
-                    
+
                     <div class="table-container">
                         <div class="table-header">
                             <h3>Sesiones Recientes</h3>
@@ -192,7 +195,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <div class="quick-actions">
                         <h3>Acciones Rápidas</h3>
                         <div class="actions-grid">
@@ -203,7 +206,7 @@
                                 <h4>Nueva Venta</h4>
                                 <p>Registrar venta de productos</p>
                             </a>
-                            
+
                             <a href="sesiones.html" class="action-card">
                                 <div class="action-icon">
                                     <i class="fas fa-play-circle"></i>
@@ -211,7 +214,7 @@
                                 <h4>Iniciar Sesión</h4>
                                 <p>Activar equipo para cliente</p>
                             </a>
-                            
+
                             <a href="equipos.html" class="action-card">
                                 <div class="action-icon">
                                     <i class="fas fa-tools"></i>
@@ -219,7 +222,7 @@
                                 <h4>Mantenimiento</h4>
                                 <p>Reportar equipo en reparación</p>
                             </a>
-                            
+
                             <a href="clientes.html" class="action-card">
                                 <div class="action-icon">
                                     <i class="fas fa-user-plus"></i>
@@ -231,16 +234,17 @@
                     </div>
                 </div>
             </div>
-            
+
             <footer class="main-footer">
                 <p>CyberManager v1.0.0 | © 2023 Todos los derechos reservados</p>
                 <p>Sistema de Gestión de Cibercafé</p>
             </footer>
         </main>
     </div>
-    
+
     <script src="js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/dashboard.js"></script>
 </body>
+
 </html>

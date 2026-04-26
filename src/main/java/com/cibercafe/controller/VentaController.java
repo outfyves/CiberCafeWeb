@@ -26,6 +26,7 @@ public class VentaController {
     }
 
     @PostMapping
+    @SuppressWarnings("unchecked")
     public Venta procesarVenta(@RequestBody Map<String, Object> payload) {
         // Extraer datos del payload enviado desde el JS
         Double total = Double.valueOf(payload.get("total").toString());

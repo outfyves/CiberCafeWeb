@@ -22,6 +22,14 @@ public class Producto {
 
     public Producto() {}
 
+    public Producto(String nombre, String categoria, Double precio, Integer stock, String icono) {
+        this.nombre = nombre;
+        this.categoria = categoria;
+        this.precio = precio;
+        this.stock = stock;
+        this.icono = icono;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

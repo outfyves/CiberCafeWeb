@@ -45,6 +45,86 @@
     --spacing-xl: 3rem;
 }
 
+/* --- ESTILOS MODO OSCURO --- */
+body.dark-mode {
+    --bg-light: #121212;
+    --bg-white: #1e1e1e;
+    --bg-gray: #2d2d2d;
+    --bg-dark: #000000;
+    --text-dark: #f0f0f0;  /* Texto casi blanco para alto contraste */
+    --text-light: #b0b0b0; /* Texto gris claro para descripciones */
+    --text-white: #ffffff;
+    --border-color: #383838;
+    --secondary-color: #34495e; /* Un poco más claro para mejor visibilidad */
+}
+
+body.dark-mode {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+}
+
+body.dark-mode .main-content { background-color: #121212; }
+body.dark-mode .sidebar { background-color: #111; border-right: 1px solid #333; }
+body.dark-mode .main-header { background-color: #1a1a1a; border-bottom-color: #333; }
+body.dark-mode .main-header h1 { color: #fff; }
+
+body.dark-mode .card, 
+body.dark-mode .stat-card, 
+body.dark-mode .pc-card, 
+body.dark-mode .equipo-card, 
+body.dark-mode .cliente-card, 
+body.dark-mode .table-container, 
+body.dark-mode .filter-section,
+body.dark-mode .cart-section,
+body.dark-mode .product-card,
+body.dark-mode .report-filters,
+body.dark-mode .chart-container,
+body.dark-mode .quick-actions,
+body.dark-mode .action-card { 
+    background-color: #1e1e1e !important; 
+    border-color: #333 !important;
+    color: #f0f0f0 !important;
+}
+
+/* Corregir texto azul oscuro que se ve mal */
+body.dark-mode h2, 
+body.dark-mode h3, 
+body.dark-mode h4,
+body.dark-mode label,
+body.dark-mode .summary-item span,
+body.dark-mode .pc-name,
+body.dark-mode .item-name,
+body.dark-mode .stat-label {
+    color: #5dade2 !important; /* Azul celeste brillante */
+}
+
+body.dark-mode .summary-item.total span {
+    color: #2ecc71 !important; /* El total mejor en verde brillante */
+}
+
+body.dark-mode .btn-outline-primary {
+    color: #5dade2;
+    border-color: #5dade2;
+}
+
+body.dark-mode .category-tag {
+    background-color: rgba(93, 173, 226, 0.2);
+    color: #5dade2;
+}
+
+body.dark-mode .data-table td { color: #e0e0e0; border-bottom-color: #333; }
+body.dark-mode .data-table thead th { background-color: #2c3e50; color: #fff; }
+body.dark-mode .data-table tbody tr:hover { background-color: #252525; }
+
+body.dark-mode input, body.dark-mode select, body.dark-mode textarea {
+    background-color: #252525 !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode .stat-value { color: #fff; }
+body.dark-mode .stat-label { color: #bbb; }
+
 /* Estilos generales */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -348,6 +428,72 @@ input, select, textarea {
     display: none;
 }
 
+/* --- MODALES GLOBALES --- */
+.modal {
+    display: none;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+.modal.show {
+    display: flex !important;
+}
+
+.modal-content {
+    background-color: var(--bg-white);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 550px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-heavy);
+    position: relative;
+    padding: 0;
+    animation: modalSlideUp 0.4s ease-out;
+}
+
+@keyframes modalSlideUp {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--secondary-color);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 0.5;
+    transition: transform 0.2s;
+}
+
+.close-modal:hover {
+    transform: scale(1.2);
+}
+
 /* Animaciones */
 @keyframes fadeIn {
     from {
@@ -362,4 +508,18 @@ input, select, textarea {
 
 .fade-in {
     animation: fadeIn 0.5s ease forwards;
+}
+/* Estilos para badges en el sidebar */
+.sidebar-menu ul li a {
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-menu .badge {
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: auto;
 }

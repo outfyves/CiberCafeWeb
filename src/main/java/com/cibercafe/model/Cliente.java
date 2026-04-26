@@ -9,7 +9,8 @@ import jakarta.persistence.Column;
 import java.time.LocalDateTime;
 
 /**
- * Entidad Cliente ajustada a la base de datos existente.
+ * Entidad que representa a un Cliente en el sistema.
+ * Mapeada a la tabla 'clientes' en la base de datos MySQL.
  */
 @Entity
 @Table(name = "clientes")
@@ -25,6 +26,7 @@ public class Cliente {
     private String cedula;
     private String correo;
     private String telefono;
+    private String estado;
 
     @Column(name = "fecha_registro", updatable = false)
     private LocalDateTime fechaRegistro;
@@ -33,7 +35,7 @@ public class Cliente {
         this.fechaRegistro = LocalDateTime.now();
     }
 
-    // Getters y Setters
+    // Getters y Setters con encapsulamiento estándar
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -51,6 +53,9 @@ public class Cliente {
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
     public LocalDateTime getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
